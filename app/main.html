@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Lorenzo De Sio" />
+
+
+<title>staR output</title>
+
+<script src="resources/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="resources/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="resources/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="resources/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="resources/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="resources/navigation-1.1/tabsets.js"></script>
+<script src="resources/navigation-1.1/codefolding.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+div.sourceCode {
+  overflow-x: visible;
+}
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">staR output</h1>
+<h4 class="author"><em>Lorenzo De Sio</em></h4>
+<h4 class="date"><em>Thu Dec 28 21:01:53 2017</em></h4>
+
+</div>
+
+
+<div class="panel panel-primary">
+<div class="panel-heading">
+<h3 class="panel-title">
+use docs/inidividualism.dra
+</h3>
+</div>
+<div class="panel-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cmd &lt;-<span class="st"> </span><span class="kw">star_parse_stata_command</span>(<span class="st">&quot;filename&quot;</span>)
+<span class="co">#syntax filename</span>
+<span class="co">#POSTPROCESS update_vars</span></code></pre></div>
+<p>Opening dataset <span class="label label-default">docs/inidividualism.dra</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(foreign)
+    
+<span class="co"># Detaching and removing any previous &quot;star.data&quot; object</span>
+<span class="kw">tryCatch</span>({ 
+    <span class="kw">detach</span>(star.data)
+  <span class="kw">rm</span>(star.data)
+    }
+  , <span class="dt">error =</span> <span class="cf">function</span>(err) {<span class="kw">cat</span>(<span class="st">&quot; &quot;</span>)}, <span class="dt">warning =</span> <span class="cf">function</span>(err) {<span class="kw">cat</span>(<span class="st">&quot; &quot;</span>)}
+)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading dataset, registering the &quot;star.data&quot; object in the global scope (double arrow), attaching.</span>
+<span class="kw">tryCatch</span>({ 
+  star.data &lt;&lt;-<span class="st"> </span><span class="kw">read.dta</span>(cmd<span class="op">$</span>filename)
+    <span class="kw">attach</span>(star.data)
+    <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="st">&quot;</span><span class="ch">\r\n\r\n</span><span class="st">&lt;span class=&#39;label label-success&#39;&gt;&quot;</span>,<span class="kw">ncol</span>(star.data),<span class="st">&quot;&lt;/span&gt; variables, &lt;span class=&#39;label label-success&#39;&gt;&quot;</span>,<span class="kw">nrow</span>(star.data),<span class="st">&quot;&lt;/span&gt; observations.&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>))
+}, <span class="dt">error =</span> <span class="cf">function</span>(err) {<span class="kw">errorPanel</span>(err)}, <span class="dt">warning =</span> <span class="cf">function</span>(err) {<span class="kw">warningPanel</span>(err)}
+)</code></pre></div>
+<div class="alert alert-danger">
+<h4>
+Error!
+</h4>
+<p>
+Error in read.dta(cmd$filename): unable to open file: ‘No such file or directory’
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># + results=&#39;asis&#39;, echo=FALSE </span></code></pre></div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "FALSE";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Lorenzo De Sio" />
+
+
+<title>staR output</title>
+
+<script src="resources/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="resources/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="resources/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="resources/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="resources/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="resources/navigation-1.1/tabsets.js"></script>
+<script src="resources/navigation-1.1/codefolding.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+div.sourceCode {
+  overflow-x: visible;
+}
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">staR output</h1>
+<h4 class="author"><em>Lorenzo De Sio</em></h4>
+<h4 class="date"><em>Thu Dec 28 21:02:08 2017</em></h4>
+
+</div>
+
+
+<div class="panel panel-primary">
+<div class="panel-heading">
+<h3 class="panel-title">
+use pippo
+</h3>
+</div>
+<div class="panel-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cmd &lt;-<span class="st"> </span><span class="kw">star_parse_stata_command</span>(<span class="st">&quot;filename&quot;</span>)
+<span class="co">#syntax filename</span>
+<span class="co">#POSTPROCESS update_vars</span></code></pre></div>
+<p>Opening dataset <span class="label label-default">pippo</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(foreign)
+    
+<span class="co"># Detaching and removing any previous &quot;star.data&quot; object</span>
+<span class="kw">tryCatch</span>({ 
+    <span class="kw">detach</span>(star.data)
+  <span class="kw">rm</span>(star.data)
+    }
+  , <span class="dt">error =</span> <span class="cf">function</span>(err) {<span class="kw">cat</span>(<span class="st">&quot; &quot;</span>)}, <span class="dt">warning =</span> <span class="cf">function</span>(err) {<span class="kw">cat</span>(<span class="st">&quot; &quot;</span>)}
+)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading dataset, registering the &quot;star.data&quot; object in the global scope (double arrow), attaching.</span>
+<span class="kw">tryCatch</span>({ 
+  star.data &lt;&lt;-<span class="st"> </span><span class="kw">read.dta</span>(cmd<span class="op">$</span>filename)
+    <span class="kw">attach</span>(star.data)
+    <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="st">&quot;</span><span class="ch">\r\n\r\n</span><span class="st">&lt;span class=&#39;label label-success&#39;&gt;&quot;</span>,<span class="kw">ncol</span>(star.data),<span class="st">&quot;&lt;/span&gt; variables, &lt;span class=&#39;label label-success&#39;&gt;&quot;</span>,<span class="kw">nrow</span>(star.data),<span class="st">&quot;&lt;/span&gt; observations.&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>))
+}, <span class="dt">error =</span> <span class="cf">function</span>(err) {<span class="kw">errorPanel</span>(err)}, <span class="dt">warning =</span> <span class="cf">function</span>(err) {<span class="kw">warningPanel</span>(err)}
+)</code></pre></div>
+<div class="alert alert-danger">
+<h4>
+Error!
+</h4>
+<p>
+Error in read.dta(cmd$filename): unable to open file: ‘No such file or directory’
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># + results=&#39;asis&#39;, echo=FALSE </span></code></pre></div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "FALSE";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Lorenzo De Sio" />
+
+
+<title>staR output</title>
+
+<script src="resources/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="resources/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="resources/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="resources/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="resources/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="resources/navigation-1.1/tabsets.js"></script>
+<script src="resources/navigation-1.1/codefolding.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code > span.dt { color: #204a87; } /* DataType */
+code > span.dv { color: #0000cf; } /* DecVal */
+code > span.bn { color: #0000cf; } /* BaseN */
+code > span.fl { color: #0000cf; } /* Float */
+code > span.ch { color: #4e9a06; } /* Char */
+code > span.st { color: #4e9a06; } /* String */
+code > span.co { color: #8f5902; font-style: italic; } /* Comment */
+code > span.ot { color: #8f5902; } /* Other */
+code > span.al { color: #ef2929; } /* Alert */
+code > span.fu { color: #000000; } /* Function */
+code > span.er { color: #a40000; font-weight: bold; } /* Error */
+code > span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #000000; } /* Constant */
+code > span.sc { color: #000000; } /* SpecialChar */
+code > span.vs { color: #4e9a06; } /* VerbatimString */
+code > span.ss { color: #4e9a06; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #000000; } /* Variable */
+code > span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code > span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code > span.ex { } /* Extension */
+code > span.at { color: #c4a000; } /* Attribute */
+code > span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code > span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+div.sourceCode {
+  overflow-x: visible;
+}
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">staR output</h1>
+<h4 class="author"><em>Lorenzo De Sio</em></h4>
+<h4 class="date"><em>Thu Dec 28 21:02:23 2017</em></h4>
+
+</div>
+
+
+<div class="panel panel-primary">
+<div class="panel-heading">
+<h3 class="panel-title">
+use pluto
+</h3>
+</div>
+<div class="panel-body">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cmd &lt;-<span class="st"> </span><span class="kw">star_parse_stata_command</span>(<span class="st">&quot;filename&quot;</span>)
+<span class="co">#syntax filename</span>
+<span class="co">#POSTPROCESS update_vars</span></code></pre></div>
+<p>Opening dataset <span class="label label-default">pluto</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(foreign)
+    
+<span class="co"># Detaching and removing any previous &quot;star.data&quot; object</span>
+<span class="kw">tryCatch</span>({ 
+    <span class="kw">detach</span>(star.data)
+  <span class="kw">rm</span>(star.data)
+    }
+  , <span class="dt">error =</span> <span class="cf">function</span>(err) {<span class="kw">cat</span>(<span class="st">&quot; &quot;</span>)}, <span class="dt">warning =</span> <span class="cf">function</span>(err) {<span class="kw">cat</span>(<span class="st">&quot; &quot;</span>)}
+)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Loading dataset, registering the &quot;star.data&quot; object in the global scope (double arrow), attaching.</span>
+<span class="kw">tryCatch</span>({ 
+  star.data &lt;&lt;-<span class="st"> </span><span class="kw">read.dta</span>(cmd<span class="op">$</span>filename)
+    <span class="kw">attach</span>(star.data)
+    <span class="kw">cat</span>(<span class="kw">paste</span>(<span class="st">&quot;</span><span class="ch">\r\n\r\n</span><span class="st">&lt;span class=&#39;label label-success&#39;&gt;&quot;</span>,<span class="kw">ncol</span>(star.data),<span class="st">&quot;&lt;/span&gt; variables, &lt;span class=&#39;label label-success&#39;&gt;&quot;</span>,<span class="kw">nrow</span>(star.data),<span class="st">&quot;&lt;/span&gt; observations.&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>))
+}, <span class="dt">error =</span> <span class="cf">function</span>(err) {<span class="kw">errorPanel</span>(err)}, <span class="dt">warning =</span> <span class="cf">function</span>(err) {<span class="kw">warningPanel</span>(err)}
+)</code></pre></div>
+<div class="alert alert-danger">
+<h4>
+Error!
+</h4>
+<p>
+Error in read.dta(cmd$filename): unable to open file: ‘No such file or directory’
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># + results=&#39;asis&#39;, echo=FALSE </span></code></pre></div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "FALSE";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
