@@ -1,0 +1,6 @@
+#!/bin/bash
+cd -- "$(dirname "$BASH_SOURCE")"
+cd ../app
+R CMD BATCH staR_plumber.R
+sleep 10
+open http://localhost:8000/

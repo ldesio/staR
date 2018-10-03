@@ -6,6 +6,7 @@ PDlocs <- c("pandoc",
              "~/.cabal/bin/pandoc", 
              "~/Library/Haskell/bin/pandoc", 
              "C:\\PROGRA~1\\Pandoc\\bin\\pandoc\\pandoc.exe",
+			 "C:\\Tools\\pandoc-2.3-windows-x86_64\\pandoc-2.3-windows-x86_64\\pandoc.exe",
 			 winuser) 
              # Maybe a .exe is required for that last one?
              # Don't think so, but not a regular Windows user

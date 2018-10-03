@@ -10,60 +10,48 @@
 
 
 
-#' <div class='panel panel-primary'><div class='panel-heading'><h3 class='panel-title'> regress ptv_neos woman clage edu3 polint </h3></div><div class='panel-body'>
+#' <div class='panel panel-primary'><div class='panel-heading'><h3 class='panel-title'> use docs/example.dta </h3></div><div class='panel-body'>
 #+ results='asis', echo=FALSE
 source(file="cmd.rm/_star_lib.R")
-star.cmdline <- "regress ptv_neos woman clage edu3 polint"
-cmd <- star_parse_stata_command("varlist")
-#syntax varlist
-	
-	model <- model(cmd$varlist)
+star.cmdline <- "use docs/example.dta"
+cmd <- star_parse_stata_command("filename")
+#syntax filename
+#POSTPROCESS update_vars
 
-	
-	# missing <- cmd$varlist[!(cmd$varlist %in% colnames(star.data))]
-	
-	
-	pandoc.header(paste0("OLS Regression model of *",model$outcome, "* by ",model$pretty_predictors), 3)
-	
-	# Gets a data matrix of all-numeric variables, with "i." variables resolved
-	# (R by default treats them as categorical)
-	matrix <- resolved_data_matrix(cmd$varlist)
-	
-	# removes "i."
-	varsyntax = resolved_model_syntax(model$syntax)
+if (cmd$filename=="xx") cmd$filename <- file.choose()
 
-	#run OLS regression
-	ols <- eval(parse(text=paste("lm(",varsyntax,",data=matrix)")))
+
+#+ results='asis', echo=FALSE 
+cat(paste("Opening dataset <span class='label label-default'>",cmd$filename,"</span>",sep=""))
+# cat(paste("Opening dataset **",cmd$filename,"**",sep=""))
+
+#+ results='asis', echo=FALSE 
+library(foreign)
 	
-	beta <- FALSE
-	
-	# beta option
-	if (cmd$options!="") {
-	  if (grepl("beta",cmd$options)) {
-		
-	  beta <- TRUE
-	    
-	  enforce_packages(c("lm.beta"))
-		library(lm.beta)
-		betaols <- lm.beta(ols)
-		
-	  stargazer(ols, betaols, 
-			coef = list(ols$coefficients, 
-            betaols$standardized.coefficients),
-			column.labels = c("b", "beta"),
-			type="html", single.row=TRUE, star.cutoffs = c(0.05, 0.01, 0.001))
-	  }
-	}	
-	
-	if(beta==FALSE) {
-	  stargazer(ols, type="html", single.row=TRUE, star.cutoffs = c(0.05, 0.01, 0.001))
+# Detaching and removing any previous "star.data" object
+tryCatch({ 
+	detach(star.data)
+  rm(star.data)
 	}
+  , error = function(err) {cat(" ")}, warning = function(err) {cat(" ")}
+)
+
+# Loading dataset, registering the "star.data" object in the global scope (double arrow), attaching.
+tryCatch({ 
+  star.data <<- read.dta(cmd$filename)
+	attach(star.data)
+	cat(paste("\r\n\r\n<span class='label label-success'>",ncol(star.data),"</span> variables, <span class='label label-success'>",nrow(star.data),"</span> observations.",sep=""))
+}, error = function(err) {errorPanel(err)}, warning = function(err) {warningPanel(err)}
+)
 
 
 
 
 
 
+# + results='asis', echo=FALSE 
 
+	
+	
 
 #' </div></div>
