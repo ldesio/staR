@@ -1,5 +1,5 @@
 # staR
-Statistics and Data Analysis Powered by R
+#### Statistics and Data Analysis Powered by R
 
 staR is free software for performing basic statistical and data analysis tasks. It is primarily designed as a support tool for teaching introductory courses in data analysis for the social sciences, or other social science courses requiring data analysis tasks.
 
