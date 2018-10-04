@@ -6,7 +6,7 @@ staR is free software for performing basic statistical and data analysis tasks. 
 ## Goals
 staR’s goals are to provide a software for data analysis with the following characteristics:
 #### Easy to use
-It should allow users to focus on what is important in social science research (understanding social reality; theory and hypotheses, concepts, research design, indicators, choice of statistical tools) rather than waste time in learning a complex programming language;
+It should allow users to focus on key aspects of social science research (understanding social reality; theory and hypotheses, concepts, research design, indicators, choice of appropriate statistical tools) rather than force users to invest time and resources in learning a complex programming language, whose power might not necessarily be needed;
 #### Easy to be employed in teaching
 Rather than requiring to learn and teach complex menu and window systems (looking for options hidden in minor buttons or dialog boxes) it should be based on a simple command syntax with simple options;
 also, it should produce output that is easy and consistent to copy and paste across applications (e.g. helping perform assignments);
@@ -25,8 +25,12 @@ use, browse, tab1, summarize, histogram, tab2, scatter, regress
 (* Stata ® is a registered trademark of StataCorp LP.)
 
 ## Extensibility
-staR is powered by R. In a nutshell, it provides a familiar, easy user interfact that accepts a subset of Stata commands. It then forwards the command syntax to a set of R scripts (one for each implemented command), with output results then collected and visualized in an easy-to-use (also easy to copy and paste) visual form.
-As a result, staR is very easy to extend. New commands (meant as functional equivalents of their Stata counterparts) can be easily added by simply adding and R script receving parameters and implementing commands. Given the power of R, the implementation of a command is in most cases a matter of selecting the appropriate package and just performing minimal conversion operations. This allows any instructor with a good knowledge of R to extend the system for their specific teaching purposes.
+staR is powered by R. In a nutshell, it provides a familiar, easy user interface that:
+* accepts a subset of Stata commands;
+* forwards the command syntax to a dedicated R script (one for each implemented command);
+* collects output for visualization, and presents it in a simple and accessible visual form.
+
+As a result, staR is very easy to extend. New commands (meant as functional equivalents of their Stata counterparts) can be easily added by simply adding and R script receving parameters and implementing commands. Given the power of R, the implementation of a command is in most cases a matter of selecting the appropriate package and just adding some translation and integration code. This allows any instructor with a good knowledge of R to extend the system for their specific teaching purposes.
 
 ## Current limitations
 
