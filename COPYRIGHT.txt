@@ -1,4 +1,4 @@
 staR - Statistics and Data Analysis Powered by R
-Copyright (C) 2018 Lorenzo De Sio
+Copyright (C) 2018-2020 Lorenzo De Sio
 
 This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions; see LICENSE.txt for details.
