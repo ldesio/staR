@@ -1,4 +1,0 @@
-#!/bin/bash
-cd -- "$(dirname "$BASH_SOURCE")"
-cd ../app
-R CMD BATCH _setup.R
