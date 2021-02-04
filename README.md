@@ -31,9 +31,10 @@ staR addresses the above challenges by providing a web-based app that allows use
 ### Single-machine use (recommended for instructor evaluation, or for advanced users)
 
 * ensure you have a recent version of R installed;
-* pull the staR repository at https://github.com/ldesio/staR;
-* run "_setup.R" once;
-* run "staR_plumber.R" to launch staR, and then browse http://localhost:8000/ to access staR.
+* download staR from https://github.com/ldesio/staR/archive/master.zip ;
+* unzip this file into a directory of your choice, and move to the `staR-master/app` subdirectory;
+* run "_setup.R" in R (or RStudio) only the first time, to download and install required packages;
+* to run staR, run "staR_plumber.R", and then browse http://localhost:8000/ . Please remember to close both your browser *and* R (or RStudio) after each session, to avoid an R instance to stay alive and use system resources.
 
 ### Setting up a staR server allowing student access
 
