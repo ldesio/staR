@@ -1,0 +1,16 @@
+# setwd("M:/staR/JS/Rengine")
+setwd("/staR")
+library(jsonlite)
+library(plumber)
+#library(foreign) 
+#library(knitr)
+# library(summarytools)
+#library(expss)
+#library(stargazer)
+
+svr <- plumber::plumb("api.R")
+s <- svr$run(host='0.0.0.0',port=80)
+
+
+
+

@@ -1,0 +1,772 @@
+<html>
+	<head>
+		<link
+			href="resources/bootstrap-3.3.5/css/united.min.css"
+			rel="stylesheet"
+		/>
+
+		<script src="resources/jquery-1.11.3/jquery.min.js"></script>
+		<!--<script src="StataDtaJS-master/StataDta.js"></script>-->
+		<script src="encoder.js"></script>
+		<script src="prototype.js"></script>
+		<script src="loader.js"></script>
+		<script src="scriptmapper.js"></script>
+
+		<script>
+			var sid = 0;
+			var historyIndex = 0;
+			var dataset;
+			var datasetVars;
+			var varInfo;
+
+			var dataMatrix = new Object();
+			var datasetUse;
+			var datasetPostProcess;
+			var databrowser, dofileeditor, helpwindow;
+			var currentCommandLine;
+
+			var hasError;
+
+			function status(status) {
+				document.getElementById("status").innerHTML = status;
+			}
+			function handleEnter(e) {
+				var keycode = e.keyCode ? e.keyCode : e.which;
+				if (keycode == "13") {
+					runCommands(document.getElementById("command").value);
+				}
+				// up
+				if (keycode == "38") {
+					if (historyIndex >= 0) {
+						historyIndex -= 1;
+						document.getElementById(
+							"command"
+						).value = getHistoryEntry(historyIndex);
+						strLength = String(
+							document.getElementById("command").value
+						).length;
+						//document.getElementById('command').setSelectionRange(strLength, strLength);
+					} else {
+						document.getElementById("command").value = "";
+					}
+				}
+				// down
+				if (keycode == "40") {
+					var tableRef = window.parent.frames.hist.document
+						.getElementById("hist_table")
+						.getElementsByTagName("tbody")[0];
+					if (historyIndex < tableRef.rows.length) {
+						historyIndex += 1;
+						document.getElementById(
+							"command"
+						).value = getHistoryEntry(historyIndex);
+						strLength = String(
+							document.getElementById("command").value
+						).length;
+						//document.getElementById('command').setSelectionRange(strLength, strLength);
+					} else {
+						document.getElementById("command").value = "";
+					}
+				}
+			}
+			function addHistoryRow(cmd) {
+				var tableRef = window.parent.frames.hist.document
+					.getElementById("hist_table")
+					.getElementsByTagName("tbody")[0];
+
+				var newRow = tableRef.insertRow(tableRef.rows.length);
+
+				var newCell = newRow.insertCell();
+				var newText = window.parent.frames.output.document.createTextNode(
+					"" + tableRef.rows.length
+				);
+				newCell.appendChild(newText);
+
+				var newCell2 = newRow.insertCell();
+				var newText = window.parent.frames.output.document.createTextNode(
+					"" + cmd
+				);
+				newCell2.appendChild(newText);
+
+				window.parent.frames.hist.scrollTo(
+					0,
+					window.parent.frames.hist.document.body.scrollHeight
+				);
+
+				historyIndex = tableRef.rows.length;
+				return({numCell: newCell, commandCell: newCell2});
+			}
+			function getHistoryEntry(index) {
+				var tableRef = window.parent.frames.hist.document
+					.getElementById("hist_table")
+					.getElementsByTagName("tbody")[0];
+				return tableRef.rows[index].cells[1].innerHTML;
+			}
+			function datasetHasVariable(varName) {
+				for (var i = 0; i < datasetVars.length; i++) {
+					if (datasetVars[i] === varName.replace("i.", "")) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			function varLabel(varName) {
+				return varInfo[varName].label;
+			}
+			function updateVarsFromRemoteHaven(arr) {
+				var doc = window.parent.frames.vars.document;
+				jQuery(doc).ready(function () {
+					var tableRef = doc
+						.getElementById("var_table")
+						.getElementsByTagName("tbody")[0];
+
+					jQuery(".varrow", doc).remove();
+
+					var items = Object.keys(arr[1]/*[0]*/);
+					datasetVars = items;
+					varInfo = {};
+					for (var item in arr[1]) {
+						//datasetVars.push(item);
+						var label = arr[1][item];
+
+						varInfo[item] = {name: item, label: label};
+
+						var newRow = tableRef.insertRow(tableRef.rows.length);
+						newRow.className = "varrow";
+
+						var newCell = newRow.insertCell();
+						var newText = doc.createTextNode("" + item);
+						newCell.appendChild(newText);
+
+						var newCell = newRow.insertCell();
+						newCell.setAttribute("nowrap", "nowrap");
+						var newText = doc.createTextNode("" + label);
+						newCell.appendChild(newText);
+					}
+				});
+			}			
+			function loadDataset({
+				input = requiredParam("input"),
+				command = requiredParam("command"),
+				resetPostProcess = false,
+				postProcess = ""
+			}={}) {
+					var tmpPP = datasetPostProcess;
+					if (resetPostProcess) tmpPP =  "";
+					tmpPP += postProcess;
+
+					var pkg = {"command": command, "postprocess": tmpPP};		
+					
+					appendCommandDescription(input.commandline, rSyntax + ";\n" + tmpPP);
+					
+
+					console.log("Posting to /mutatedata:");
+					console.log(pkg);
+					jQuery.ajax({
+						url: '/mutatedata',
+						type: 'POST',
+						data: JSON.stringify(pkg),
+						contentType: 'application/json; charset=utf-8',
+						dataType: 'json',
+						async: false,
+						success: function(msg) {
+							var dataArr = JSON.parse(msg);
+							console.log("Response:");
+							console.log(dataArr);
+							datasetUse = command;
+							datasetPostProcess = tmpPP;
+							
+							dataset = dataArr;
+							
+							if(typeof databrowser !== 'undefined') databrowser.refresh();
+							
+							
+							console.log("dataset set.");
+							// updateVarsFromRemote(dataArr);
+							updateVarsFromRemoteHaven(dataArr);
+							
+							var items = Object.keys(dataArr[0]);
+							appendContent(datasetVars.length + " variables, " + dataArr[0].length + " observations");
+						},
+						error: function(msg) {
+							
+							hasError = true;
+							var error;
+							error = msg.responseJSON; // JSON.parse(msg.responseJSON.message).join(" ");
+							appendContent("<span style='color:red'>" + error.message + "</span>");
+						}
+					});
+
+			}
+			
+			function parseStataSyntaxFromCommandLine({parseType, options}={}) {
+				return parseStataSyntax(currentCommandLine, parseType, options);
+			}
+			function isOptionPresent(option) {
+				if (currentCommandLine.includes(","))
+					return currentCommandLine.split(",")[1].trim().includes(option);
+
+				return false;
+			}
+			function findItem(array,substring) {
+				var index, value, result;
+				for (index = 0; index < array.length; ++index) {
+				    value = array[index];
+				    if (value.substring(0, substring.length) === substring) {
+				        return value;
+				    }
+				}
+				return "";
+			}
+			function parseStataSyntax(commandline, parseType, options) {
+				
+    			commandline = commandline.trim();
+				
+				var result = new Object();
+
+				result.commandline = commandline;
+				result.by = "";
+
+				if (commandline.startsWith("by") && commandline.includes(":")) {
+					var subparts = commandline.split(":");
+					result.by = subparts[0].trim();
+					commandline = subparts[1].trim();
+				}
+
+				result.options = {};
+
+				if (commandline.includes(",") && options) {
+					var subparts = commandline.split(",");
+					comspec = subparts[0].trim();
+					
+					let sentOptionsString = subparts[1].trim();
+					sentOptionsString = sentOptionsString.replace(/ \(/g,"(");
+					sentOptionsString = sentOptionsString.replace(/\( /g,"(");
+					sentOptionsString = sentOptionsString.replace(/ \)/g,")");
+					
+					let sentOptions = sentOptionsString.split(" "); 
+					sentOptions.forEach(
+						function(element) {
+							let optionName = element, optionValue = element;
+							optionName = findItem(options,optionName);
+							if (element.indexOf("(")!=-1) {
+								if (element.indexOf(")")==-1) {
+									reportError(
+										result,"Option <b>" + element + "</b> " +
+											"has no closing parenthesis."
+										);
+									return;
+								} else {
+									optionName = element.substr(0,element.indexOf("("));
+									optionValue = element.substr(element.indexOf("("));
+									optionValue = optionValue.replace(/\(/g,"");
+									optionValue = optionValue.replace(/\)/g,"");
+								}
+							}
+
+							if (options!==undefined) {
+								if (options.includes(optionName)) {
+									result.options[optionName] = optionValue;
+								} else  {
+									reportError(
+										result,"Option <b>" + element + "</b> " +
+											"is not supported."
+										);
+								}
+							}
+						}
+						);
+				} else {
+					comspec = commandline;
+				}
+
+				comparts = comspec.split(" ");
+				result.command = comparts[0];
+
+				// Not anymore a parseType inferred if not declared
+				/*
+				if (parseType === undefined) {
+					var parseType = "varlist";
+					if (result.command == "use") parseType = "filename";
+					if (result.command.startsWith("gen")) parseType = "gen";
+				}
+				*/
+
+				if (comparts.length > 1) {
+					comparts.shift();
+
+					if (parseType == "gen") {
+						var patt = / +/g;
+						var genspec = commandline.substr(commandline.indexOf(' ')+1).replace(patt, " ");
+						result.newvar = genspec.substr(0, genspec.indexOf('=')).trim();
+						result.expression = genspec.substr(genspec.indexOf('=')+1).trim(); ;
+					}
+
+					if (parseType == "filename") {
+						result.filename = comparts[0];
+					}
+
+					if (parseType == "varlist") {
+						// wildcard expansion
+						Array.prototype.find = function (regex) {
+							var arr = this;
+							var matches = arr.filter(function (e) {
+								return regex.test(e);
+							});
+							return matches;
+							/*console.log(matches);
+						  return matches.map(function(e) { return arr.indexOf(e); } );*/
+						};
+
+						var vars = [];
+						for (i = 0; i < comparts.length; i++) {
+							let thisVar = comparts[i];
+							let exp = "";
+							if (thisVar.indexOf("*") == -1) {
+								vars.push(thisVar);
+							} else {
+								if (thisVar.startsWith("*")) {
+									exp = thisVar.replace("*", "") + "$";
+								} else if (thisVar.endsWith("*")) {
+									exp = "^" + thisVar.replace("*", "");
+								}
+								let expandedVars = datasetVars.find(
+									new RegExp(exp)
+								);
+								vars = vars.concat(expandedVars);
+							}
+						}
+
+						result.vars = vars;
+
+						// when interactions are specified, breaks into components for checking variable existence
+						varsCopy = vars
+							.join(" ")
+							.replace(/##/g, " ")
+							.replace(/#/g, " ")
+							.split(" ");
+
+						for (i = 0; i < varsCopy.length; i++) {
+							var chk = datasetHasVariable(varsCopy[i]);
+							if (!chk) {
+								result.error =
+									"Variable <b>" +
+									varsCopy[i] +
+									"</b> not found.";
+								return result;
+							}
+						}
+					}
+				}
+
+				return result;
+			}
+			function createModelFormulaFromVars(vars) {
+				let depvar = vars[0];
+				let indepvars = vars.slice(1);
+				let formula = depvar + " ~ " + indepvars.join(" + ");
+				
+				// support for factor variables
+				formula = formula.replace(/i\.([^ #]+)/g,"as.factor($1)");
+
+				// support for interaction notation
+				formula = formula.replace(/##/g,"*").replace(/#/g,":");
+				
+				return formula;
+			}
+
+			function reportError(input, error) {
+				appendCommandDescription(input.commandline, "");
+				appendContent("<span style='color:red'>" + error + "</span>");
+			}
+			function runCommands(multiCommandString) {
+				multiCommandString.split("\n")
+					.forEach(singleCommandLine => {
+						let run = true;
+						if (singleCommandLine.trim()=="") run = false;
+						if (singleCommandLine.trim().substring(0,2)=="//") run = false;				
+						if (run) runCommand(singleCommandLine);
+					});
+			}
+			function runCommand(stataCommandLine) {
+				
+				hasError = false;
+
+				start = new Date().getTime();
+
+				var patt = / +/g;
+				currentCommandLine = stataCommandLine.replace(patt, " ");
+
+				input = parseStataSyntaxFromCommandLine();
+
+
+				if (typeof input.error !== "undefined") {
+					reportError(input, input.error);
+					hasError = true;
+					
+				} else {
+
+					var rSyntax = "";
+
+					/*
+						case "R":
+						
+						rSyntax = (input.commandline.substring(2));
+						console.log(rSyntax);
+						var pkg = {"command":datasetUse + "; " + rSyntax};
+						postCommandJSON("Raw R commands", input.commandline, rSyntax, pkg);
+						break;
+						*/
+					
+
+					
+					var scriptName = getScriptName(input.command);
+					var theCode = Script.include("commands/" + scriptName + ".js");
+
+					// will be able to check available options here, by analyzing command code
+
+					if (runCode(theCode)) {
+						now = new Date().getTime();
+						status("Done (" + (now - start) + " ms),");
+					} else {
+						hasError = true;
+						reportError(
+							input,
+							"Command <b>" + input.command + "</b> is unrecognized."
+						);
+					}
+					document.getElementById("command").value = "";
+				}
+
+				let historyRow = input.commandline;
+				if (hasError) {
+					errorCells = addHistoryRow(historyRow);
+					errorCells.numCell.setAttribute("style","color:red");
+					errorCells.commandCell.setAttribute("style","color:red");
+				} else {
+					addHistoryRow(historyRow);
+				};
+				
+
+			}
+
+
+			function wrapGraphicCommand(command) {
+				return (
+					"library(knitr);\n" + 
+					"tmp_filename <- paste0('static/generated/',format(as.numeric(Sys.time())*1000,digits=15),'.png');\n" +
+					"png(tmp_filename);\n" + 
+					command + "\n" +
+					"dev.off()\n" + 
+					"uri = knitr::image_uri(tmp_filename)\n" +
+					"file.remove(tmp_filename)\n" +
+					"cat(sprintf('<img src=\"%s\" />', uri));"
+					);
+			}
+			/*function wrapGraphicCommand(command) {
+				return (
+					"tmp_filename <- paste0(format(as.numeric(Sys.time())*1000,digits=15),'.png');\n" +
+					"png(paste0('static/generated/',tmp_filename));\n" + 
+					command + "\n" +
+					"dev.off()\n" + 
+					"cat(paste0('<img src=generated/',tmp_filename,'>'));");
+			}*/
+			function requiredParam(name) {
+			  throw new Error(`missing required parameter: ${name}`);
+			}
+
+			function runPackage(
+			{
+				title = "",
+				input = requiredParam("input"),
+				rPackages = [],
+				rCommands =requiredParam("rCommands")
+			}={}) {
+				runRemoteCommandNOOUT(
+					title,
+					input,
+					rPackages,
+					rCommands
+				);
+			}
+
+
+			function runRemoteCommand(
+				title,
+				input,
+				rPackages,
+				rCommands
+			) {
+				runRemoteCommandNOOUT(
+					title,
+					input,
+					rPackages,
+					rCommands
+				);
+			}
+
+			function runRemoteCommandNOOUT(
+				title,
+				input,
+				rPackages,
+				rCommands
+			) {
+				var rSyntax = "";
+
+				localDatasetUse = datasetUse;
+				// here: if (input.if) init localDatasetUse with subsetting
+// https://dplyr.tidyverse.org/reference/filter.html
+
+
+
+
+
+				dataSyntax = localDatasetUse + ";\n";
+
+				if (datasetPostProcess!="") dataSyntax += "\n" + datasetPostProcess + "\n";
+				
+				// might split rSyntax from rDisplaySyntax to not show the whole output vector thing...
+
+				// packages
+				for (i = 0; i < rPackages.length; i++)
+					rSyntax += "library(" + rPackages[i] + "); ";
+				rSyntax += "\n";
+
+				// before Haven
+				var rCommandSyntax = "";
+				// commands appended to output vector
+				for (i = 0; i < rCommands.length; i++) {
+						rCommandSyntax += rCommands[i] + "\n";
+				}
+
+				// BY funziona
+				if (input.by != "") {
+					var byVar = input.by.split(" ")[1].trim();
+					
+					if (!datasetHasVariable(byVar)) {
+						//appendCommandDescription(stataSyntax, "");
+						reportError(input, 
+							"Variable <b>" +
+							byVar +
+							"</b> not found.");
+						return;
+					}
+
+
+					rSyntax += "levs <- levels(stardata$" + byVar + "); ";
+					rSyntax +=
+						"if (is.null(levs)) levs <- sort(unique(stardata$" +
+						byVar +
+						"));\n";
+
+					rSyntax += "";
+
+					rSyntax += "for (lev in levs) {\n";
+					rSyntax += "\tss <- subset(stardata,as.numeric(data.matrix(" + byVar + "))==lev);\n";
+					rSyntax += "\tnss <- data.frame(data.matrix(ss));\n";
+					rSyntax +=
+						"\tcat(paste0(\"<h3 style='background-color:#cccccc; border-radius:10px; padding:10px'><i>" +
+						byVar +
+						"==\",lev,\" [\",names(val_lab(stardata$" + byVar + ")[lev]),\"], \",nrow(ss),\" observations:</i></h3>\"));\n";
+					rSyntax +=
+						"\tcat(\"<div style='margin-left:40px; margin-bottom:20px'>\");\n";
+					rSyntax +=
+						"\t" +
+						rCommandSyntax
+							.replace(/stardata/g, "ss")
+							.replace(/starnumdata/g, "nss")
+							.replace(/\n/g, "\n\t");
+					rSyntax += 'cat("</div>");\n';
+					rSyntax += "}";
+
+					//rSyntax += "by(stardata,stardata$" + input.by.split(" ")[1].trim() +", analysis);\n";
+				} else {
+					rSyntax += rCommandSyntax;
+				}
+
+				var pkg = { command: rSyntax };
+				var stataSyntax = input.commandline;
+
+				var html = "";
+				
+				postCommandJSON(title, stataSyntax, dataSyntax, rSyntax, pkg, html);
+			}
+
+			function appendContent(HTMLContent) {
+
+				var outputDoc = window.parent.frames.output.document;
+
+				var divId = "out" + new Date().getTime();
+
+				var element = outputDoc.createElement("div");
+				element.id = divId;
+				element.setAttribute(
+					"style",
+					"background-color:#ffffff; width:80%; float:left; overflow:auto; border-radius:10px; padding:10px; margin:10px"
+				);
+				element.innerHTML = HTMLContent;
+				outputDoc.body.appendChild(element);
+
+				outputDoc
+					.getElementById(divId)
+					.previousSibling.scrollIntoView();
+
+			}
+			function appendCommandDescription(stataSyntax, rSyntax) {
+				var outputDoc = window.parent.frames.output.document;
+
+				var element = outputDoc.createElement("div");
+				var divId = "cmd" + new Date().getTime();
+				element.id = divId;
+				element.setAttribute(
+					"style",
+					"background-color:#ff9933; width:80%; float:right; overflow:auto; border-radius:10px; padding:10px;  margin:10px"
+				);
+
+				// R syntax now disabled
+				var showRSyntax = false;
+
+				if (isOptionPresent("rsyntax")) showRSyntax = true;
+
+				element.innerHTML = stataSyntax;
+				if (showRSyntax)
+					element.innerHTML =
+						stataSyntax +
+						"<br>" +
+						"<pre style='color:#dcdcdc'><i>" +
+						Encoder.htmlEncode(rSyntax) +
+						"</i></pre>";
+
+				outputDoc.body.appendChild(element);
+				outputDoc.getElementById(divId).scrollIntoView();
+			}
+			function postCommandJSON(
+				title,
+				stataSyntax,
+				dataSyntax,
+				rDisplaySyntax,
+				pkg,
+				html
+			) {
+				// console.log("Sending this:");
+
+				// NOOUT
+				theUrl = "/cmdsink";
+
+				// theUrl = "http://localhost:8000/cmdmulti";
+				/*if (html == "PNGURL") {
+					theUrl = "/pngwithdata";
+					pkg.data = dataSyntax;
+				} else {*/
+					pkg.command = dataSyntax + "\n" + pkg.command;
+				//}
+
+				// rDisplaySyntax = datasetUse + ";\r\n" + rDisplaySyntax;
+
+				appendCommandDescription(stataSyntax, dataSyntax + rDisplaySyntax);
+
+				console.log(theUrl + "\n" + pkg);
+				jQuery.ajax({
+					url: theUrl, // 'http://localhost:8000/runJSON',
+					type: "POST",
+					data: JSON.stringify(pkg),
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					async: false,
+					success: function (msg) {
+						console.log("Raw response:");
+						console.log(msg);
+
+						var htmlOutput;
+						var resArr = JSON.parse(msg);
+						console.log("Output array:");
+						console.log(resArr);
+
+						let htmlItems = resArr.filter(function (e) {
+							if (typeof e == "string")
+								if (e.trim().substring(0, 1) == "<")
+									return true;
+							if (!Array.isArray(e)) return false;
+							if (e[0].trim().substring(0, 1) == "<") return true;
+							if (e[0].trim().substring(0, 6) == '[1] "<')
+								return true;
+							return false;
+						});
+						for (i = 0; i < htmlItems.length; i++) {
+							htmlItems[i][0] = htmlItems[i][0].replace(
+								/\\n/g,
+								""
+							);
+						}
+						htmlOutput = htmlItems.join("<br/>");
+
+						appendContent("<h3>" + title + "</h3>" + htmlOutput);
+					},
+					error: function (msg) {
+						//console.log("Raw response:");
+						//console.log(msg);
+						var error;
+
+						error = msg.responseJSON; // JSON.parse(msg.responseJSON.message).join(" ");
+
+						// var htmlOutput = "<b style='color:red'>" + error.error + "</b><br>" + error.message;
+						appendContent(
+							"<span style='color:red'>" +
+								error.message +
+								"</span>"
+						);
+					},
+				});
+			}
+		</script>
+	</head>
+	<body onkeydown="handleEnter(event)" style="background-color: #ececec;">
+		<input
+			id="file-input"
+			type="file"
+			name="name"
+			style="display: none;"
+			onchange="onNewFile(this.files)"
+		>
+		<table cellpadding="5" class="display" width="100%">
+			<tr>
+				<th
+					style="
+						background-color: #912400;
+						font-size: 12pt;
+						text-align: left;
+						color: white;
+					"
+				>
+					Command
+				</th>
+			</tr>
+			<tr>
+				<td>
+					<!--<form name="form">-->
+					<!-- action="#" -->
+					
+					<input
+						size="50"
+						type="text"
+						id="command"
+						autocomplete="off"
+						style="
+							color: black;
+							background-color: white;
+							font-size: 14pt;
+							width: 100%;
+							height: 50;
+							text-align: top;
+						"
+					/>
+					<!--</form>-->
+				</td>
+			</tr>
+			<tr>
+				<td><span id="status"></span></td>
+			</tr>
+		</table>
+	</body>
+</html>

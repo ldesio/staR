@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>staR Help</title>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+
+
+<
+<script>
+    
+    function getUrlParameter(name) {
+	    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+	    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+	    var results = regex.exec(location.search);
+	    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+	};
+
+	var command = getUrlParameter("command");
+
+
+
+	
+	document.write (
+		"<h3 align=center><br><br>Now taking you (in 5 seconds) to the Stata website<br>to show you documentation about the <b>" + command +
+		"</b> command,<br>which inspired the command with the same name<br>implemented in staR.<br><br>" +
+		"Please note that <i>only a minimal subset</i><br>of the corresponding Stata command<br>" + 
+		"is usually implemented in staR.</h3>");
+	
+
+	
+
+    setTimeout(() => {  location.href = "https://www.stata.com/help.cgi?" + command; }, 5000);
+            
+
+	
+
+</script>
+</body>
+</html>

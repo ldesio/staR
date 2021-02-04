@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>staR Code Editor</title>
+<style type="text/css" media="screen">
+    #editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 60%; /* Full width */
+  height: 60%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 30% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+</style>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="resources/highlight/styles/default.css">
+<script src="resources/highlight/highlight.pack.js"></script>
+<script>
+	
+document.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('div.stata').forEach((block) => {
+    // doesn't work
+    //hljs.highlightBlock(block);
+  });
+});
+
+</script>
+
+
+</head>
+<body>
+
+<div class="stata" id="editor" style="font-size: 14px">// this is an example do-file, with a basic staR test suite:
+// hit Ctrl-Enter (Windows) or Command-Enter (Mac)
+// to run the selected commands (if there is a selection)
+// or the contents of the whole do-file.
+
+use http://cise.luiss.it/data/mini_wvs2005_spain.dta 
+tab1 woman
+tab1 woman edu8 socclass_subj5
+tab2 edu8 woman
+tab2 edu8 woman, row
+tab2 edu8 woman, col
+tab2 edu8 woman, row col
+tab2 edu8 woman, row col nofreq
+
+hist woman
+
+// DOESN'T WORK ONLINE (Linux, R latest version) BUT WORKS LOCALLY (Windows, perhaps older version or some localization issue)!!!
+hist edu8 
+hist age
+by woman: hist edu8
+
+summarize woman age agesq edu8 socclass_subj5 income
+
+regress sat_life woman age agesq i.edu8
+regress sat_life woman age agesq i.edu8#income
+regress sat_life woman age agesq i.edu8##income
+regress sat_life woman age agesq edu8 socclass_subj5 income health_subj trustpeople feelfreedom
+regress sat_life woman age agesq edu8 socclass_subj5 income health_subj trustpeople feelfreedom, beta
+regress sat_life woman age agesq edu8 socclass_subj5 income health_subj trustpeople feelfreedom imp_family imp_friends imp_leisure imp_politics imp_work imp_religion
+regress sat_life woman##imp_work
+regress sat_life woman#imp_work
+
+by woman: regress sat_life age agesq edu8 socclass_subj5 imp_*
+
+scatter edu8 age
+scatter age agesq
+
+gen agesq2 = age^2
+scatter age agesq2
+
+scatter agesq age
+scatter agesq2 age
+
+browse
+</div>
+
+
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p style="">Commands processing...<br>go to the staR main window to see results.</p>
+  </div>
+
+</div>
+
+    
+<script src="/resources/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/chrome");
+    // editor.session.setMode("ace/mode/javascript");
+    editor.commands.addCommand({
+        name: 'run',
+        bindKey: {win: 'Ctrl-Enter',  mac: 'Command-Enter'},
+        exec: function(editor) {
+            let syntax = editor.getSelectedText();
+            if (syntax=="") syntax = editor.getValue();
+            
+            modal.style.display = "block";
+            setTimeout(() => {  modal.style.display = "none"; }, 2000);
+            window.opener.runCommands(syntax); // editor.getSelectedText();
+            //...
+        },
+        readOnly: true // false if this command should not apply in readOnly mode
+    });
+
+    var modal = document.getElementById("myModal");
+
+    /*
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    */
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    } 
+
+
+
+</script>
+</body>
+</html>
