@@ -1,11 +1,9 @@
 # list.of.packages <- c("plumber", "foreign", "knitr", "summarytools","expss","stargazer")
 # new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 # if(length(new.packages)) install.packages(new.packages)
-install.packages("plumber")
-install.packages("tidyverse")
-install.packages("foreign") 
-install.packages("knitr")
-install.packages("summarytools")
-install.packages("expss")
-install.packages("haven")
-install.packages("stargazer")
+want = c("plumber", "tidyverse", "foreign", "knitr", "summarytools", "expss", "haven", "stargazer")
+have = want %in% rownames(installed.packages())
+if ( any(!have) ) { install.packages( want[!have] ) }
+# junk = lapply(want, library, character.only = TRUE)
+# rm(have,want,junk)
+rm(have,want)
