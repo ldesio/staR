@@ -74,8 +74,8 @@ nwlbls = [];
 
 for (i = 0; i < n; i++) {
   
-  x = args[i].substr(0, args[0].indexOf('=')).trim(); // gets values before the '=' operator
-  y = args[i].substr(args[0].indexOf('=')+1).trim(); // gets values after the '=' operator
+  x = args[i].substr(0, args[i].indexOf('=')).trim(); // gets values before the '=' operator
+  y = args[i].substr(args[i].indexOf('=')+1).trim(); // gets values after the '=' operator
   y = Number(y); // string values after '=' operator are transformed into numeric ones
   z = lbls[i]; // get the ith value of the 'lbls' object
 
