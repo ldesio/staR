@@ -3,7 +3,6 @@ input = parseStataSyntaxFromCommandLine({parseType:"varlist"});
 loadDataset({
 	input:input,
 	command: datasetUse,
-	postProcess: "library(dplyr);\n" +
-		"stardata <- dplyr::select(.data=stardata, -c(" + input + "));\n" 
+	postProcess: "stardata <- dplyr::select(.data=stardata, -c(" + input.vars[0] + "));\n" 
 });
 appendContent("Variable dropped.");
