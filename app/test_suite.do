@@ -26,6 +26,8 @@ regress sat_life woman age agesq edu8 socclass_subj5 income health_subj trustpeo
 regress sat_life woman##imp_work
 regress sat_life woman#imp_work
 
+logit woman age sat_life agesq
+
 scatter edu8 age
 scatter age agesq
 
