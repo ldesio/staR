@@ -29,4 +29,7 @@ regress sat_life woman#imp_work
 scatter edu8 age
 scatter age agesq
 
+generate agesq2 = age^2
+hist agesq2
+
 

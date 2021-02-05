@@ -4,14 +4,25 @@ var formula = createModelFormulaFromVars(input.vars);
 						
 var indepVars = input.vars.slice(1); //.shift();
 
+var commands = [
+		"res <- lm(" + formula + ", data=stardata);",
+		"stargazer(res,type='html',single.row=TRUE);"
+	]
+/*
+if  (input.options.beta) {
+	commands = [
+
+	]
+}
+*/
+
+
+
 runPackage({
 	title: "OLS regression of " + input.vars[0] + " by " + indepVars.join(", "),
 	input:input,
-	rPackages:["stargazer"],
-	rCommands:[
-		"res <- lm(" + formula + ", data=stardata);",
-		"stargazer(res,type='html',single.row=TRUE);"
-		]
+	rPackages:["stargazer"/*,"lm.beta"*/],
+	rCommands: commands
 });	
 
 

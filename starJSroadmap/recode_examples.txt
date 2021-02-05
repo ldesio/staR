@@ -1,0 +1,5 @@
+recode var (10 = 1 "Apple") (20 = 2 "Banana") , generate(var2) 
+
+recode var (1/5 = 1 "Fruits") (6/10 = 2 "Vegs") , generate(grocery)
+
+recode var (1 2 = 1 "Fruits") (3 4 5 = 2 "Vegs") , generate(grocery)
