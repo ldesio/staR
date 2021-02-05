@@ -3,7 +3,7 @@
 	Potrebbe funzionare, ma bisogna trovare il modo di bypassare la gestione standard di "if"...
 */
 
-input = parseStataSyntaxFromCommandLine({parseType:"varlist"});
+input = parseStataSyntax({parseType:"varlist"});
 
 /*
 if (input.if !="") {
@@ -22,14 +22,17 @@ if (input.if !="") {
 }
 */
 
-
-var ivars = "";
-for (i=0; i < input.vars.length; i++) {
-  ivars += input.vars[i] + ",";
+if (input.if !="") {
+  
+  var ivars = "";
+  for (i=0; i < input.vars.length; i++) {
+    ivars += input.vars[i] + ",";
+  }
+  
+  loadDataset({
+  	input:input,
+  	command: datasetUse,
+  	postProcess: "stardata <- dplyr::select(.data=stardata, c(" + ivars + "));\n"
+  });
+  
 }
-
-loadDataset({
-	input:input,
-	command: datasetUse,
-	postProcess: "stardata <- dplyr::select(.data=stardata, c(" + ivars + "));\n"
-});
