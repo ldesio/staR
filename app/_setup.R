@@ -1,4 +1,4 @@
-want = c("plumber", "tidyverse", "foreign", "knitr", "summarytools", "expss", "haven", "stargazer", "factors", "lm.beta")
+want = c("plumber", "tidyverse", "foreign", "knitr", "summarytools", "expss", "haven", "stargazer", "factors", "magrittr")
 have = want %in% rownames(installed.packages())
 if ( any(!have) ) { install.packages( want[!have] ) }
 # junk = lapply(want, library, character.only = TRUE)
