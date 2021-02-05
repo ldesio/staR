@@ -43,7 +43,7 @@ else if (input.if !="") {
 
 	rSubset = "library(labelled)\n" + 
 		"ifss <- base::subset(remove_labels(stardata)," + subsetCond + ");\n" +
-		"ifss <- copy_labels(stardata,ifss);\n" + 
+		"ifss <- labelled::copy_labels(stardata,ifss);\n" + 
 		"for (v in colnames(ifss)) {expss::val_lab(ifss[,v])=expss::val_lab(ifss[,v]); };\n" + 
 		"stardata <- ifss;\n";
 

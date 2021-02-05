@@ -416,67 +416,59 @@ summary {
 <div align="center">
 <h1 id="star">staR</h1>
 <p>Project Implementation<br />
-Last update: 2020/01/02</p>
+Last update: 2021/01/25</p>
 </div>
-<div id="commands-to-be-tested-t-or-implemented-i" class="section level2">
-<h2>Commands to be Tested (T) or Implemented (I)</h2>
+<div id="preliminary-notes" class="section level3">
+<h3>Preliminary notes</h3>
 <ul>
-<li><a href="#dropkeep">drop/keep</a> (I)<br />
-</li>
-<li><a href="#gen">generate</a> (T)<br />
-</li>
-<li><a href="#rep">`replace</a> (I)<br />
-</li>
-<li><a href="#rec">recode</a> (I)<br />
-</li>
-<li><a href="#labvar">label variable</a> (I)</li>
+<li>Package ‘factors’ is not available for R version 4.0.2. An alternative has to be found;</li>
 </ul>
 </div>
-<div id="implementation-details" class="section level2">
-<h2>Implementation details</h2>
-<div id="replace" class="section level3">
-<h3>‘replace’ <a name="rep"></a></h3>
-<p>‘replace’ has been implemented. Banally, it is the same javascript code for ‘generate’. However the function to be completely comparable with Stata’s one should have an ‘if’ statement that does not allow to replace the variable if the variable has not been already defined.<br />
-<strong>NOTE</strong>: A similar statement should be placed in the ‘generate’ script.</p>
+<div id="implemented-commands" class="section level3">
+<h3>Implemented Commands</h3>
+<ul>
+<li><a href="#rec">recode</a><br />
+</li>
+<li><a href="#labvar">label variable</a><br />
+</li>
+<li><a href="#genrep">generate/replace</a><br />
+</li>
+<li><a href="#dropkeep">drop/keep</a><br />
+</li>
+<li><a href="#beta">regress beta option</a></li>
+</ul>
+<div id="recode" class="section level4">
+<h4>‘recode’ <a name="rec"></a></h4>
+<p>The current version of ‘recode’ has still to be fully implemented (see the section ‘Suggestions for Implementations’). The almost all the basic features of the command are in place and seem to work properly. The only option that has been implemented is ‘generate’. The command recodes existing variables and allows for generating new variables. It allows for the specification of different rules, namely the one based single values (e.g. <code>recode x1 (1 2 3 = 1)</code>) or the one based on min/max (e.g. <code>recode x1 (1/3 = 1)</code>). The current version allows to recode multiple variables <em>if</em> no options (that is, ‘generate’ or, differently from original Stata syntax, ‘gen’) are included. As a consequence, the ‘generate’ option is allowed only if <span style="color:blue"><i>varlist</i></span> consists in a single variable, otherwise the command will return an error message. Currently, the command <em>does not</em> allow values labeling.<br />
+Differently from previous speculations, the command fundamentally relies on the R base language.</p>
 </div>
-<div id="drop-keep" class="section level3">
-<h3>‘drop’ &amp; ‘keep’ <a name="dropkeep"></a></h3>
-<p>‘drop’ and ‘keep’ have been implemented using the <code>dplyr</code> package. The chosen function is <code>select</code>. The base of the javascript command is ‘generate’.</p>
-<pre><code>
-# Script for &#39;drop&#39;
-
-input = parseStataSyntaxFromCommandLine({parseType:&quot;varlist&quot;});
-
-var varlist = &quot;&quot;;
-for (i=0; i &lt; input.vars.length; i++) {
-    varlist += input.vars[i] + &quot;,&quot;;
-}
-
-loadDataset({
-    input:input,
-    command: datasetUse,
-    postProcess: &quot;stardata &lt;- dplyr::select(.data=stardata, -c(&quot; + varlist + &quot;));\n&quot;
-});
-
-# Script for &#39;keep&#39;
-
-input = parseStataSyntaxFromCommandLine({parseType:&quot;varlist&quot;});
-
-var varlist = &quot;&quot;;
-for (i=0; i &lt; input.vars.length; i++) {
-    varlist += input.vars[i] + &quot;,&quot;;
-}
-
-loadDataset({
-    input:input,
-    command: datasetUse,
-    postProcess: &quot;stardata &lt;- dplyr::select(.data=stardata, c(&quot; + varlist + &quot;));\n&quot;
-});
-
-</code></pre>
-<!-- ### 'generate' <a name="gen"></a> -->
-<!-- ### 'recode' <a name="rec"></a> -->
-<!-- ### 'label variable' <a name="labvar"></a> -->
+<div id="label-variable" class="section level4">
+<h4>‘label variable’ <a name="labvar"></a></h4>
+<p>The current version of ‘label variable’ has still to be fully implemented (see the section ‘Suggestions for Implementations’). The basic features of the command work fine, and the command allows to specify the variable label. The command has been developed in order to handle further implementations (such as ‘label values’, ‘label list’, and so forth).</p>
+</div>
+<div id="replace-generate" class="section level4">
+<h4>‘replace’ &amp; ‘generate’ <a name="rep"></a></h4>
+<p>The basic features of ‘replace’ have been implemented building on ‘generate’, thus both rely on the ‘gen’ parse type previously developed. Both commands support the ‘if’ statement, thus generating/replacing a variable according to the values of other variables. Both commands rely on the R base language and the packages <code>dplyr</code> (functions: <code>mutate()</code>, <code>select()</code>, and <code>left_join()</code>) and <code>labelled</code> (function: <code>var_label()</code>).</p>
+<div id="regress-beta-option" class="section level5">
+<h5>‘regress beta option’ <a name="beta"></a></h5>
+<p>The linear regression command (‘regress’) now supports the ‘beta’ option. The command has been implemented fully relying on the staR background code, hence is fully integrated with the existing features of staR. Once specified, the options rescales the regression predictors using a base R language function (<code>scale()</code>) and the re-fits the regression model.</p>
+</div>
+</div>
+<div id="drop-keep" class="section level4">
+<h4>‘drop’ &amp; ‘keep’ <a name="dropkeep"></a></h4>
+<p>Commands ‘drop’ and ‘keep’ have been implemented using the R base language and the packages <code>dplyr</code> (function: <code>select()</code>), <code>labelled</code> (function: <code>var_label()</code>), and <code>expss</code> (function: <code>val_lab()</code>). Both commands support the ‘if’, thus turning the command syntax from ‘<b>drop</b>/<b>keep</b> <span style="color:blue"><i>varlist</i></span>’ to ‘<b>drop</b>/<b>keep</b> <span style="color:blue"><b>if</b> <i>exp</i></span>’.</p>
+</div>
+</div>
+<div id="suggestions-for-implementations" class="section level3">
+<h3>Suggestions for Implementations</h3>
+<div id="existing-commands" class="section level4">
+<h4>Existing Commands</h4>
+<p>The two commands that at the current stage should be fully implemented are ‘<strong>recode</strong>’ and ‘<strong>label variable</strong>’. Both rely on basic ‘parseType’ options (“label” and “recode”; see the ‘command.html’ file) that have been specified just for reproducing some general features of staR (e.g. the console feedback and the possibility to see and reproduce the command from the commands’ list). However, both commands are parsed in the specific ‘.js’ files, thus not allowing for a full integration with other staR features. Moreover, as already outlined above, ‘recode’ still does not support values labeling. Several alternatives have been explored but a solution has still to be found.<br />
+Another implementation concerns ‘<strong>generate</strong>’ and ‘<strong>replace</strong>’. It could be possible, at least hypothetically, to reduce the ‘.js’ to one, following the same logic adopted for ‘keep’/‘drop’. Nonetheless, differently from the latter case, ‘generate’ and ‘replace’ scripts have more than few relevant differences, thus the “one-script reduction” would be a less straightforward process.</p>
+</div>
+<div id="additional-commands" class="section level4">
+<h4>Additional Commands</h4>
+<p>‘graph box’ (namely, boxplot) and ‘alpha’ scripts have been drafted but are still at a very preliminary stage of development, consequently have not been loaded on the staRjs dropbox folder.</p>
 </div>
 </div>
 

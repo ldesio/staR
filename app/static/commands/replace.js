@@ -1,7 +1,7 @@
+input = parseStataSyntaxFromCommandLine({parseType:"gen"});
+
 if (currentCommandLine.includes("if")===false) {
 
-  input = parseStataSyntaxFromCommandLine({parseType:"gen"});
-  
   if (datasetHasVariable(input.newvar) === true) {
     
   loadDataset({
@@ -9,10 +9,8 @@ if (currentCommandLine.includes("if")===false) {
   	command: datasetUse,
   	postProcess: "library(dplyr);\n" +
   		"stardata <- mutate(.data=stardata, " + input.newvar + " = " + input.expression +");" + 
-  		"var_lab(stardata$" + input.newvar + ") = '" + input.expression +"';"
+  		"labelled::var_label(stardata$" + input.newvar + ") = '" + input.expression +"';"
   });
-  
-  appendContent("Variable replaced successfully.");
     
   } else {
     /* 
@@ -24,8 +22,6 @@ if (currentCommandLine.includes("if")===false) {
   }
   
 } else {
-  
-  input = parseStataSyntaxFromCommandLine({parseType:"gen"});
   
   if (datasetHasVariable(input.newvar) === true) {
     
@@ -40,10 +36,8 @@ if (currentCommandLine.includes("if")===false) {
     		"stardata <- dplyr::select(.data=stardata, -c(" + input.newvar + "));" +
     		"stardata <- left_join(stardata, stardata2);" +
     		"rm(stardata2);" +
-    		"var_lab(stardata$" + input.newvar + ") = '" + input.expression + " (" + ifcond + ")';"
+    		"labelled::var_label(stardata$" + input.newvar + ") = '" + input.expression + " (" + ifcond + ")';"
     });  
-    
-    appendContent("Variable replaced successfully.");
     
   } else {
     /* 

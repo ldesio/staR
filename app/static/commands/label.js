@@ -1,48 +1,42 @@
-var input = currentCommandLine.match(/\w+|"[^"]+"/g);
+var input = parseStataSyntaxFromCommandLine({parseType:"label"});
+var inpt = currentCommandLine.match(/\w+|"[^"]+"/g);
 
-input.command = [];
+inpt.command = [];
 
-input.command[0] = input[0];
-input.command[1] = input[1];
-input.var = input[2];
-input.label = input[3];
+inpt.command[0] = inpt[0];
+inpt.command[1] = inpt[1];
+inpt.var = inpt[2];
+inpt.label = inpt[3];
 
 
-if (input.command[1] === "var" | input.command[1] === "variable") {
-  
-  loadDataset({
-  input:currentCommandLine,
-  command: datasetUse,
-  postProcess: "library(labelled);\n" +
-  "var_label(x = stardata[[\"" + input.var + "\"]]) <- " + input.label + ";"
-  });
-  
-  
-} else if (input.command[1] === "val" | input.command[1] === "values") {
-  
-  appendCommandDescription(currentCommandLine);
-  appendContent("<span style='color:red'> Command <b> label values </b> is not implemented.</span>");
-  
-} else if (input.command[1] === "def" | input.command[1] === "define") {
-  
-  appendCommandDescription(currentCommandLine);
-  appendContent("<span style='color:red'> Command <b> label define </b> is not implemented.</span>");
-  
-} else if (input.command[1] === "l" | input.command[1] === "list") {
+var chk0 = inpt.length===4;
+var cond1 = ["var" , "variable" , "val" , "values" , "def" , "define" , "lang" , "language" , "l" , "list" , "da" , "data" , "drop" , "save" , "dir"];
+var chk1 = cond1.some(el => inpt.command[1].includes(el));
+var chk2 = inpt.label.includes('"');
+var chk3 = datasetHasVariable(inpt.var);
 
-  appendCommandDescription(currentCommandLine);
-  appendContent("<span style='color:red'> Command <b> label list </b> is not implemented.</span>");
 
-} else if (input.command[1] === "da" | input.command[1] === "data") {
-
-  appendCommandDescription(currentCommandLine);
-  appendContent("<span style='color:red'> Command <b> label data </b> is not implemented.</span>");
-  
-} else if (input.command[1] === "drop" | input.command[1] === "save" | input.command[1] === "dir") {
-
-  appendCommandDescription(currentCommandLine);
-  appendContent("<span style='color:red'> Command <b> label " + input.command[1] + "</b> is not implemented.</span>");
-  
+if (chk0) {
+  if (chk1 && chk2 && chk3) {
+    if (inpt.command[1] === "var" | inpt.command[1] === "variable") {
+      
+      loadDataset({
+      input: input,
+      command: datasetUse,
+      postProcess: "library(labelled);\n" +
+      "var_label(x = stardata[[\"" + inpt.var + "\"]]) <- " + inpt.label + ";"
+      });
+      
+    } else {
+       appendCommandDescription(input.expression);
+       appendContent("<span style='color:red'> Command <b> label " + inpt.command[1] + "</b> is not supported.</span>");
+    }
+  } else {
+    appendCommandDescription(input.expression);
+    appendContent("<span style='color:red'> Invalid syntax.</span>");
+  }
+} else {
+  appendCommandDescription(input.expression);
+  appendContent("<span style='color:red'> Invalid syntax.</span>");
 }
-
 

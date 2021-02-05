@@ -4,7 +4,7 @@
 // get the commandline // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 inpt = currentCommandLine.substr(currentCommandLine.indexOf(' ')).trim(); // substract the command from the string
-input = currentCommandLine; 
+input = parseStataSyntaxFromCommandLine({parseType:"label"});
 
 // IF comma, THEN 'opts' consists in the option. Otherwise this passage returns an empty 'opts' object // - - -
 
@@ -35,13 +35,19 @@ expss = expss.filter(el => {
   return el != null && el != '' && el != ' ';
 	});
 
-// get arguments of the expression: old values, new values, and labels // - - - - - - - - - - - - - - - - - - -
+// get arguments of the expression: old values, new values, and labels // - - - - - - - - - - - - - - - - - - - -
 
 n = expss.length;
 args = [];
 lbls = [];
 
 for (i = 0; i < n; i++) { // THIS loop must be still implemented in order to handle wrong labels specification
+
+/* 
+IF the expressions include quotes, THEN the labels are parsed and stored in the 'lbls' object and the 
+expression before the first quote is stored in the 'args' object. Otherwise the 'lbls' object is an empty 
+one and the 'args' object consists in the 'expss' one. 
+*/
   
   if (expss[i].includes('"')===true) {
     x = expss[i].substr(0,expss[i].indexOf('"')).trim();
@@ -55,24 +61,33 @@ for (i = 0; i < n; i++) { // THIS loop must be still implemented in order to han
   }
 }
 
-nwvls = [];
+/*
+The following loop subsets the 'args' object in order to get the values to be recoded, the new values, 
+and the new labels provided. The output are three vectors of same length referring to the variable(s) 
+values to be recoded ('oldvls'), the new values ('nwvls'), and the labels ('nwlbls'). These vectors are
+then included in the 'vlsdf' object.
+*/
+
 oldvls = [];
+nwvls = [];
 nwlbls = [];
 
 for (i = 0; i < n; i++) {
   
-  if (args[i].includes('/')===false) {
-    
-  x = args[i].substr(0, args[0].indexOf('=')).trim();
-  x = x.split(" ");
-  nn = x.length;
-  y = args[i].substr(args[0].indexOf('=')+2).trim();
-  y = Number(y);
-  z = lbls[i];
+  x = args[i].substr(0, args[0].indexOf('=')).trim(); // gets values before the '=' operator
+  y = args[i].substr(args[0].indexOf('=')+2).trim(); // gets values after the '=' operator
+  y = Number(y); // string values after '=' operator are transformed into numeric ones
+  z = lbls[i]; // get the ith value of the 'lbls' object
+
+  /*
+  IF the argument 'x' (namely the values before the '=' operator) includes the '/' operator, THEN the values 
+  before and after '/' are used for creating a numeric (integer) vector that takes the former as the minimum 
+  value and the latter as the maximum value. 
+  IF 'x' does not include the '/' operator, THEN the string is split.   
+  */
   
-  } else {
+  if (args[i].includes('/')) {
     
-    x = args[i].substr(0, args[0].indexOf('=')).trim();
     x = x.split('/');
     xmin = Number(x[0]);
     xmax = Number(x[1]);
@@ -80,13 +95,12 @@ for (i = 0; i < n; i++) {
     for(let w = xmin; w <= xmax; w += 1) {
       x.push(w);
     }
-    nn = x.length;
-    y = args[i].substr(args[0].indexOf('=')+2).trim();
-    y = Number(y);
-    z = lbls[i];
+
+  } else {
+    x = x.split(" ");
   }
   
-  for (k = 0; k < nn; k++) {
+  for (k = 0; k < x.length; k++) {
     oldvls.push(Number(x[k]));
     nwvls.push(y);
     nwlbls.push(z);
@@ -100,7 +114,16 @@ vlsdf = {newvalues: nwvls, oldvalues: oldvls, labels: nwlbls};
 
 Rrecode = [];
 
-if (vrlst.length >=1 & input.includes(',')===false) {
+/*
+Recoding is conditional on the presence of the 'generate' option in the command line. 
+IF the command line DOES NOT include any option AND the varlist has at least one variable, THEN for each 
+var in varlist each ith old-value is substituted by the ith new-value. 
+IF the command line includes a comma AND a 'generate' or 'gen' option AND the varlist has at least one 
+variable AND the new variable is not in the dataset, THEN for each var in varlist each ith value of the 
+original variable(s) is substituted by the ith new-value.
+*/
+
+if (vrlst.length >=1 & currentCommandLine.includes(',')===false) {
   
   for (k = 0; k < vrlst.length; k++) {
     
@@ -110,23 +133,23 @@ if (vrlst.length >=1 & input.includes(',')===false) {
       vlsdf.oldvalues[i] + "] <- " + vlsdf.newvalues[i] +  ";");
     }
 
-    /* GC 20201-01-15: values are not being labeled.... why?*/
-    for (i = 0; i < vlsdf.newvalues.length; i++) { // This loop is actually too long for the purpose, but fine for no
+    /* GC 2021-01-15: values are not being labeled.... why?*/
+    for (i = 0; i < vlsdf.newvalues.length; i++) { 
       if (vlsdf.labels[i] === "") {
-        Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], " + vlsdf.newvalues[i] + ") <- NA;");
+        Rrecode = (Rrecode + "x = labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- NA;");
         } else {
-          Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";");
+          Rrecode = (Rrecode + "x = labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";");
         }
       }
   }
 
   loadDataset({
-  input: appendCommandDescription,
+  input: input,
   command: datasetUse,
   postProcess: Rrecode,
   });
 
-} else if (vrlst.length===1 & input.includes(',')===true) {
+} else if (vrlst.length===1 & currentCommandLine.includes(',')===true) {
   
   if (fn==="generate" | fn==="gen") {
     
@@ -139,18 +162,18 @@ if (vrlst.length >=1 & input.includes(',')===false) {
         Rrecode = (Rrecode + "stardata[[\"" + newvar + "\"]][stardata[[\"" + newvar + "\"]]==" + 
         vlsdf.oldvalues[i] + "] <- " + vlsdf.newvalues[i] +  ";");
       }
-    
-      for (i = 0; i < vlsdf.newvalues.length; i++) { // This loop is actually too long for the purpose, but fine for now
-    
+      
+      /* GC 2021-01-15: values are not being labeled.... why?*/
+      for (i = 0; i < vlsdf.newvalues.length; i++) { 
         if (vlsdf.labels[i] == "") {
-          Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + newvar + "\"]], " + vlsdf.newvalues[i] + ") <- NA;");
+          Rrecode = (Rrecode + "x = labelled::val_label(stardata[[\"" + newvar + "\"]], v = " + vlsdf.newvalues[i] + ") <- NA;");
           } else {
-            Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + newvar + "\"]], " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";");
+            Rrecode = (Rrecode + "x = labelled::val_label(stardata[[\"" + newvar + "\"]], v =  " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";");
           }
       }
     
     loadDataset({
-    input: appendCommandDescription,
+    input: input,
     command: datasetUse,
     postProcess: Rrecode,
     });
@@ -163,6 +186,16 @@ if (vrlst.length >=1 & input.includes(',')===false) {
     
   } else {
     appendCommandDescription(input);
-    appendContent("<span style='color:red'> Recoding option not supported.");
+    appendContent("<span style='color:red'> Recoding option not supported.</span>");
+  }
+  
+} else if (vrlst.length>1 & currentCommandLine.includes(',')===true) {
+  
+  if (fn==="generate" | fn==="gen") {
+      appendCommandDescription(currentCommandLine);
+      appendContent("<span style='color:red'> Command does not support the <b> generate </b> option if varlist includes more than one variable.</span>");
+  } else {
+      appendCommandDescription(currentCommandLine);
+      appendContent("<span style='color:red'> Recoding option not supported.</span>");
   }
 }

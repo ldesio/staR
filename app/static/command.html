@@ -312,6 +312,17 @@
 						result.newvar = genspec.substr(0, genspec.indexOf('=')).trim();
 						result.expression = genspec.substr(genspec.indexOf('=')+1).trim(); ;
 					}
+					
+					// GC 2021-01-23 This parse type has still to be fully implemented
+					if (parseType == "label") {
+					  result.expression = commandline;
+					}
+					
+					// GC 2021-01-23 This parse type has still to be fully implemented
+					if (parseType == "recode") {
+					  result.expression = commandline;
+					}
+					
 
 					if (parseType == "filename") {
 						result.filename = comparts[0];

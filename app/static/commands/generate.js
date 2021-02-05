@@ -1,6 +1,6 @@
-if (currentCommandLine.includes("if")===false) {
+input = parseStataSyntaxFromCommandLine({parseType:"gen"});
 
-  input = parseStataSyntaxFromCommandLine({parseType:"gen"});
+if (currentCommandLine.includes("if")===false) {
   
   if (datasetHasVariable(input.newvar) === false) {
     
@@ -9,10 +9,8 @@ if (currentCommandLine.includes("if")===false) {
   	command: datasetUse,
   	postProcess: "library(dplyr);\n" +
   		"stardata <- mutate(.data=stardata, " + input.newvar + " = " + input.expression +");" + 
-  		"var_lab(stardata$" + input.newvar + ") = '" + input.expression +"';"
+  		"labelled::var_label(stardata$" + input.newvar + ") = '" + input.expression +"';"
   });
-  
-  appendContent("Variable generated successfully.");
     
   } else {
     /* 
@@ -24,8 +22,6 @@ if (currentCommandLine.includes("if")===false) {
   }
   
 } else {
-  
-  input = parseStataSyntaxFromCommandLine({parseType:"gen"});
   
   if (datasetHasVariable(input.newvar) === false) {
     
@@ -39,10 +35,8 @@ if (currentCommandLine.includes("if")===false) {
     		"stardata2 <- mutate(.data=stardata2, " + input.newvar + " = " + input.expression +");" + 
     		"stardata <- left_join(stardata, stardata2);" +
     		"rm(stardata2);" +
-    		"var_lab(stardata$" + input.newvar + ") = '" + input.expression + " (" + ifcond + ")';"
+    		"labelled::var_label(stardata$" + input.newvar + ") = '" + input.expression + " (" + ifcond + ")';"
     });  
-    
-    appendContent("Variable generated successfully.");
     
   } else {
         /* 
@@ -53,9 +47,6 @@ if (currentCommandLine.includes("if")===false) {
     appendContent("<span style='color:red'> Variable <b>" + input.newvar + "</b> already exists.</span>");
   }
 }
-
-
-
 
 
 
