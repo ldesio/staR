@@ -1,0 +1,47 @@
+---
+output:
+  html_document:
+    toc: false
+    toc_depth: 3
+---
+
+<div align="center">
+# staR
+Project Implementation  
+Last update: 2020/12/06
+</div>
+
+
+## Testing preliminary issues
+
+### General Notes <a name="GN"></a>
+
+* Does not load the following resources. Not a major issue, however the visualization is affected. Google Chrome DevTools console returns the following errors:      
+  * Failed to load resource: https://code.jquery.com/jquery-3.4.1.slim.min.js (net::ERR_CONNECTION_RESET);  
+  * Failed to load resource: https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css (net::ERR_CONNECTION_RESET);  
+  * Failed to load resource: https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js (net::ERR_CONNECTION_RESET);  
+
+### About the commands
+
+* `tab1`: It works fine;  
+* `tab2`: It works fine options included (`col`, `row`, `nofreq`);  
+* `hist`: It works fine also with `by` option. The only issue is related to the plot labels, as shown below, but I don't know whether or not this problem is related to the issues highlighted in the previous section (see [General Notes](#GN)):  
+<p>&nbsp;</p>
+```{r ssa-logo, fig.align = 'left', out.width = "50%", echo=FALSE}
+knitr::include_graphics(here::here("report/images/hist1.png"))
+```
+<p>&nbsp;</p>
+* `summarize`: It works fine, but slightly implemented: 'mean' and 'standard deviation' values now are rounded at three decimal digits (see [Changes and Implementation](#CandI));  
+* `browse`: It works fine;  
+* `scatter`: It works fine;  
+* `regress`: Overall, it works fine. However, if the `beta` option is called then the command produces an empty output. I've not been able to figure out which is the problem, so far (see [Issues](#UI));  
+* `scatter`: It works fine;  
+
+### Changes and Implementations <a name="CandI"></a>
+
+* '_setup.R': Switch from a list of `install.packages` calls to a wrapper function;
+* `summarize`: Now rounds *mean* and *standard deviation* values at three decimal digits;  
+
+### Issues <a name="UI"></a>
+
+* `regress`: When the `beta` option is included it returns a blank output, only with the header of the table;
