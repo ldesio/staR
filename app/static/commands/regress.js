@@ -16,7 +16,7 @@ if  (input.options.beta) {
 	]
 
   runPackage({
-  	title: "OLS regression of " + input.vars[0] + " by " + indepVars.join(", "),
+  	title: "OLS regression (beta coefficients reported) of " + input.vars[0] + " by " + indepVars.join(", "),
   	input:input,
   	rPackages:["stargazer","arm"],
   	rCommands: commands
