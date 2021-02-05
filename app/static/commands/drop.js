@@ -1,8 +1,16 @@
 input = parseStataSyntaxFromCommandLine({parseType:"varlist"});
 
-loadDataset({
+
+for (i=0; i < input.vars.length; i++) {
+  
+    loadDataset({
 	input:input,
 	command: datasetUse,
-	postProcess: "stardata <- dplyr::select(.data=stardata, -c(" + input.vars[0] + "));\n" 
-});
-appendContent("Variable dropped.");
+	postProcess: "stardata <- dplyr::select(.data=stardata, -c(" + input.vars[i] + "));\n" 
+  });
+
+
+  /*rCommands.push("stardata <- dplyr::select(.data=stardata, -c(" + input.vars[i] + "));\n" )*/
+  
+}
+
