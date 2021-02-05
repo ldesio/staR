@@ -1,0 +1,74 @@
+---
+output:
+  html_document:
+    toc: false
+    toc_depth: 3
+---
+
+<div align="center">
+# staR
+Project Implementation  
+Last update: 2020/01/02
+</div>
+
+## Commands to be Tested (T) or Implemented (I)
+
+* [drop/keep](#dropkeep) (I)   
+* [generate](#gen) (T)   
+* [`replace](#rep) (I)    
+* [recode](#rec) (I)  
+* [label variable](#labvar) (I)  
+
+## Implementation details
+
+### 'replace' <a name="rep"></a>
+
+'replace' has been implemented. Banally, it is the same javascript code for 'generate'. However the function to be completely comparable with Stata's one should have an 'if' statement that does not allow to replace the variable if the variable has not been already defined.  
+**NOTE**: A similar statement should be placed in the 'generate' script. 
+
+### 'drop' & 'keep' <a name="dropkeep"></a>
+
+'drop' and 'keep' have been implemented using the `dplyr` package. The chosen function is `select`. 
+The base of the javascript command is 'generate'. 
+``` 
+
+# Script for 'drop'
+
+input = parseStataSyntaxFromCommandLine({parseType:"varlist"});
+
+var varlist = "";
+for (i=0; i < input.vars.length; i++) {
+    varlist += input.vars[i] + ",";
+}
+
+loadDataset({
+	input:input,
+	command: datasetUse,
+	postProcess: "stardata <- dplyr::select(.data=stardata, -c(" + varlist + "));\n"
+});
+
+# Script for 'keep'
+
+input = parseStataSyntaxFromCommandLine({parseType:"varlist"});
+
+var varlist = "";
+for (i=0; i < input.vars.length; i++) {
+    varlist += input.vars[i] + ",";
+}
+
+loadDataset({
+	input:input,
+	command: datasetUse,
+	postProcess: "stardata <- dplyr::select(.data=stardata, c(" + varlist + "));\n"
+});
+
+
+```
+
+<!-- ### 'generate' <a name="gen"></a> -->
+
+
+
+<!-- ### 'recode' <a name="rec"></a> -->
+
+<!-- ### 'label variable' <a name="labvar"></a> -->
