@@ -20,8 +20,10 @@ Last update: 2021/01/25
 * [recode](#rec)  
 * [label variable](#labvar)  
 * [generate/replace](#genrep)   
-* [drop/keep](#dropkeep)  
+* [logit] (#logit)  
 * [regress beta option](#beta)  
+* [drop/keep](#dropkeep)  
+
 
 #### 'recode' <a name="rec"></a>
 
@@ -36,7 +38,11 @@ The current version of 'label variable' has still to be fully implemented (see t
 
 The basic features of 'replace' have been implemented building on 'generate', thus both rely on the 'gen' parse type previously developed. Both commands support the 'if' statement, thus generating/replacing a variable according to the values of other variables. Both commands rely on the R base language and the packages `dplyr` (functions: `mutate()`, `select()`, and `left_join()`) and `labelled` (function: `var_label()`).
 
-##### 'regress beta option' <a name="beta"></a>
+#### 'logit' <a name="logit"></a>  
+
+The logit regression command ('logit') has been implemented relying on the 'regress.js' script. The command has been implemented relying on the R base language (function: `glm()`) and the `stargazer` package for the regression table visualization.  
+
+#### 'regress beta option' <a name="beta"></a>
 
 The linear regression command ('regress') now supports the 'beta' option. The command has been implemented fully relying on the staR background code, hence is fully integrated with the existing features of staR. Once specified, the options rescales the regression predictors using a base R language function (`scale()`) and the re-fits the regression model. 
 
