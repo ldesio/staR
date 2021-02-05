@@ -34,4 +34,13 @@ scatter age agesq
 generate agesq2 = age^2
 hist agesq2
 
+// Recode test
+* Values labeling does not work
+recode sat_life (1 2 3 4 5 = 0) (6 7 8 9 10 = 1) // one var, noslash, nolabel, nogen [WORKS]
+recode sat_life (1/5 = 0) (6/10 = 1) // one var, slash, nolabel, nogen [WORKS]
+recode sat_life sat_fin_fam (1 2 3 4 5 = 0) (6 7 8 9 10 = 1) // two vars, noslash, nolabel, nogen [WORKS]
+recode sat_life sat_fin_fam (1/5 = 0) (6/10 = 1) // two vars, slash, nolabel, nogen [WORKS]
+recode sat_life (1 2 3 4 5 = 0) (6 7 8 9 10 = 1), generate(sat_life2) // one var, noslash, nolabel, gen [WORKS]
+recode sat_life (1/5 = 0) (6/10 = 1), generate(sat_life2) // one var, slash, nolabel, gen [WORKS]
+
 
