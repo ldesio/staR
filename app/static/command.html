@@ -227,17 +227,26 @@
 
 				result.commandline = commandline;
 				result.by = "";
+				result.if = "";
 
 				if (commandline.startsWith("by") && commandline.includes(":")) {
-					var subparts = commandline.split(":");
+					let subparts = commandline.split(":");
 					result.by = subparts[0].trim();
 					commandline = subparts[1].trim();
+				}
+
+				if (commandline.includes(" if ")) {
+					let ifClause = commandline.slice(commandline.indexOf(" if ") + " if ".length-1).trim();
+					if (ifClause.includes(",")) ifClause = ifClause.substring(0,ifClause.indexOf(",")).trim();
+					
+					commandline = commandline.replace(" if " + ifClause,"");
+					result.if = ifClause;
 				}
 
 				result.options = {};
 
 				if (commandline.includes(",") && options) {
-					var subparts = commandline.split(",");
+					let subparts = commandline.split(",");
 					comspec = subparts[0].trim();
 					
 					let sentOptionsString = subparts[1].trim();
@@ -538,6 +547,21 @@
 				// commands appended to output vector
 				for (i = 0; i < rCommands.length; i++) {
 						rCommandSyntax += rCommands[i] + "\n";
+				}
+
+
+				// IF
+				if (input.if != "") {
+					rCommandSyntax = 
+						"library(labelled)\n" + 
+						"ifss <- base::subset(remove_labels(stardata)," + input.if + ");\n" +
+						"ifss <- copy_labels(stardata,ifss);\n" + 
+						"for (v in colnames(ifss)) {expss::val_lab(ifss[,v])=expss::val_lab(ifss[,v]); };\n" + 
+						"cat(paste0(\"<h3 style='background-color:#ececec; border-radius:10px; padding:10px'><i>" +
+						input.if + "</i></h3>\"));\n" +
+						rCommandSyntax
+							.replace(/stardata/g, "ifss") +
+						'cat("</div>");\n';
 				}
 
 				// BY funziona
