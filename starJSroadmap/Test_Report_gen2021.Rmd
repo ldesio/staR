@@ -19,10 +19,10 @@ Last update: 2021/01/25
 
 * [recode](#rec)  
 * [label variable](#labvar)  
-* [generate/replace](#genrep)   
-* [logit] (#logit)  
+* [generate & replace](#genrep)   
+* [logit](#logit)  
 * [regress beta option](#beta)  
-* [drop/keep](#dropkeep)  
+* [drop & keep](#dropkeep)  
 
 
 #### 'recode' <a name="rec"></a>

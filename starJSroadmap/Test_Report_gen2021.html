@@ -431,11 +431,13 @@ Last update: 2021/01/25</p>
 </li>
 <li><a href="#labvar">label variable</a><br />
 </li>
-<li><a href="#genrep">generate/replace</a><br />
+<li><a href="#genrep">generate &amp; replace</a><br />
 </li>
-<li><a href="#dropkeep">drop/keep</a><br />
+<li><a href="#logit">logit</a><br />
 </li>
-<li><a href="#beta">regress beta option</a></li>
+<li><a href="#beta">regress beta option</a><br />
+</li>
+<li><a href="#dropkeep">drop &amp; keep</a></li>
 </ul>
 <div id="recode" class="section level4">
 <h4>‘recode’ <a name="rec"></a></h4>
@@ -449,10 +451,14 @@ Differently from previous speculations, the command fundamentally relies on the 
 <div id="replace-generate" class="section level4">
 <h4>‘replace’ &amp; ‘generate’ <a name="rep"></a></h4>
 <p>The basic features of ‘replace’ have been implemented building on ‘generate’, thus both rely on the ‘gen’ parse type previously developed. Both commands support the ‘if’ statement, thus generating/replacing a variable according to the values of other variables. Both commands rely on the R base language and the packages <code>dplyr</code> (functions: <code>mutate()</code>, <code>select()</code>, and <code>left_join()</code>) and <code>labelled</code> (function: <code>var_label()</code>).</p>
-<div id="regress-beta-option" class="section level5">
-<h5>‘regress beta option’ <a name="beta"></a></h5>
-<p>The linear regression command (‘regress’) now supports the ‘beta’ option. The command has been implemented fully relying on the staR background code, hence is fully integrated with the existing features of staR. Once specified, the options rescales the regression predictors using a base R language function (<code>scale()</code>) and the re-fits the regression model.</p>
 </div>
+<div id="logit" class="section level4">
+<h4>‘logit’ <a name="logit"></a></h4>
+<p>The logit regression command (‘logit’) has been implemented relying on the ‘regress.js’ script. The command has been implemented relying on the R base language (function: <code>glm()</code>) and the <code>stargazer</code> package for the regression table visualization.</p>
+</div>
+<div id="regress-beta-option" class="section level4">
+<h4>‘regress beta option’ <a name="beta"></a></h4>
+<p>The linear regression command (‘regress’) now supports the ‘beta’ option. The command has been implemented fully relying on the staR background code, hence is fully integrated with the existing features of staR. Once specified, the options rescales the regression predictors using a base R language function (<code>scale()</code>) and the re-fits the regression model.</p>
 </div>
 <div id="drop-keep" class="section level4">
 <h4>‘drop’ &amp; ‘keep’ <a name="dropkeep"></a></h4>
