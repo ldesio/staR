@@ -1,16 +1,12 @@
 input = parseStataSyntaxFromCommandLine({parseType:"varlist"});
 
-
+var ivars = "";
 for (i=0; i < input.vars.length; i++) {
-  
-    loadDataset({
-	input:input,
-	command: datasetUse,
-	postProcess: "stardata <- dplyr::select(.data=stardata, -c(" + input.vars[i] + "));\n" 
-  });
-
-
-  /*rCommands.push("stardata <- dplyr::select(.data=stardata, -c(" + input.vars[i] + "));\n" )*/
-  
+  ivars += input.vars[i] + ",";
 }
 
+loadDataset({
+	input:input,
+	command: datasetUse,
+	postProcess: "stardata <- dplyr::select(.data=stardata, -c(" + ivars + "));\n"
+});

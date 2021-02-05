@@ -5,6 +5,7 @@
 
 input = parseStataSyntaxFromCommandLine({parseType:"varlist"});
 
+/*
 if (input.if !="") {
 
 	rSubset = "library(labelled)\n" + 
@@ -19,3 +20,16 @@ if (input.if !="") {
 		postProcess: rSubset
 	});
 }
+*/
+
+
+var ivars = "";
+for (i=0; i < input.vars.length; i++) {
+  ivars += input.vars[i] + ",";
+}
+
+loadDataset({
+	input:input,
+	command: datasetUse,
+	postProcess: "stardata <- dplyr::select(.data=stardata, c(" + ivars + "));\n"
+});
