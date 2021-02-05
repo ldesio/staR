@@ -27,16 +27,19 @@ if (currentCommandLine.includes("if")===false) {
     
     var ifcond = currentCommandLine.substr(currentCommandLine.indexOf('if')+2).trim();
     
+    if (input.expression === ".") {
+      
+      input.expression = "NA";
+
+    }
+    
     loadDataset({
     	input:input,
     	command: datasetUse,
-    	postProcess: "library(dplyr);\n" +
-    	  "stardata2 <- subset(x=stardata, c(" + ifcond + "));" +
-    		"stardata2 <- mutate(.data=stardata2, " + input.newvar + " = " + input.expression +");" + 
-    		"stardata <- dplyr::select(.data=stardata, -c(" + input.newvar + "));" +
-    		"stardata <- left_join(stardata, stardata2);" +
-    		"rm(stardata2);" +
-    		"labelled::var_label(stardata$" + input.newvar + ") = '" + input.expression + " (" + ifcond + ")';"
+    	postProcess: "library(magrittr);\n" +
+        input.newvar + "<- stardata$" + input.newvar + " %>% unlist() %>% as.numeric();" +
+        input.newvar + "[" + ifcond + "] <- " + input.expression + ";" +
+        "stardata$" + input.newvar + " <- " + input.newvar + ";"
     });  
     
   } else {
