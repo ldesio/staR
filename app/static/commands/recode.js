@@ -75,7 +75,7 @@ nwlbls = [];
 for (i = 0; i < n; i++) {
   
   x = args[i].substr(0, args[0].indexOf('=')).trim(); // gets values before the '=' operator
-  y = args[i].substr(args[0].indexOf('=')+2).trim(); // gets values after the '=' operator
+  y = args[i].substr(args[0].indexOf('=')+1).trim(); // gets values after the '=' operator
   y = Number(y); // string values after '=' operator are transformed into numeric ones
   z = lbls[i]; // get the ith value of the 'lbls' object
 
@@ -89,6 +89,16 @@ for (i = 0; i < n; i++) {
   if (args[i].includes('/')) {
     
     x = x.split('/');
+    xmin = Number(x[0]);
+    xmax = Number(x[1]);
+    x = [];
+    for(let w = xmin; w <= xmax; w += 1) {
+      x.push(w);
+    }
+
+  } else if (args[i].includes('-')) {
+    
+    x = x.split('-');
     xmin = Number(x[0]);
     xmax = Number(x[1]);
     x = [];
