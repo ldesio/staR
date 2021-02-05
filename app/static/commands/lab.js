@@ -1,0 +1,1 @@
+runCode(Script.include("commands/label.js"));
