@@ -1,38 +1,56 @@
-/*
-	Codice da testare (LDS)
-	Potrebbe funzionare, ma bisogna trovare il modo di bypassare la gestione standard di "if"...
-*/
+// NOW THIS IMPLEMENTS BOTH KEEP AND DROP
+// (drop.js calls this file; input.command allows to detect which command was called)
 
-input = parseStataSyntax({parseType:"varlist"});
 
-/*
-if (input.if !="") {
+input = parseStataSyntaxFromCommandLine({parseType:"varlist"});
 
-	rSubset = "library(labelled)\n" + 
-		"tmp <- base::subset(remove_labels(stardata)," + input.if + ");\n" +
-		"tmp <- copy_labels(stardata,ifss);\n" + 
-		"for (v in colnames(tmp)) {expss::val_lab(tmp[,v])=expss::val_lab(tmp[,v]); };\n" + 
-		"stardata <- tmp;\n";
+console.log(input.command);
 
-	loadDataset({
-		input:input,
-		command: datasetUse,
-		postProcess: rSubset
-	});
-}
-*/
-
-if (input.if !="") {
+// this subsets variables
+if (input.if =="") {
   
   var ivars = "";
   for (i=0; i < input.vars.length; i++) {
     ivars += input.vars[i] + ",";
   }
-  
-  loadDataset({
-  	input:input,
-  	command: datasetUse,
-  	postProcess: "stardata <- dplyr::select(.data=stardata, c(" + ivars + "));\n"
-  });
+ 
+  // default for "keep"
+  let subsetCond = "c(" + ivars + ")";
+  // if instead "drop", reverses condition
+  if (input.command=="drop") subsetCond = "-" + subsetCond;
+
+  rSubset = "stardata <- dplyr::select(.data=stardata, " + subsetCond + ");\n";
   
 }
+// this instead subsets cases. The two forms are alternative.
+else if (input.if !="") {
+
+/*
+	LDS 4.1.2021:
+	IMPORTANT:
+		when calling "loadDataset()"
+		(used when altering the data, while "runPackage()" is instead used for regular comands)
+		auto-IF and auto-BY are not performed (and not available).
+		So there is no need to bypass them.
+*/
+
+  // default for "keep"
+  let subsetCond = input.if;
+
+  // if instead "drop", reverses condition
+  if (input.command=="drop") subsetCond = "!(" + subsetCond + ")";
+
+
+	rSubset = "library(labelled)\n" + 
+		"ifss <- base::subset(remove_labels(stardata)," + subsetCond + ");\n" +
+		"ifss <- copy_labels(stardata,ifss);\n" + 
+		"for (v in colnames(ifss)) {expss::val_lab(ifss[,v])=expss::val_lab(ifss[,v]); };\n" + 
+		"stardata <- ifss;\n";
+
+}
+
+loadDataset({
+	input:input,
+	command: datasetUse,
+	postProcess: rSubset
+});

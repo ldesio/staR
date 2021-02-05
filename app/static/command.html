@@ -221,6 +221,7 @@
 			}
 			function parseStataSyntax(commandline, parseType, options) {
 				
+    			console.log(commandline);
     			commandline = commandline.trim();
 				
 				var result = new Object();
@@ -317,6 +318,7 @@
 					}
 
 					if (parseType == "varlist") {
+						
 						// wildcard expansion
 						Array.prototype.find = function (regex) {
 							var arr = this;
@@ -332,6 +334,7 @@
 						for (i = 0; i < comparts.length; i++) {
 							let thisVar = comparts[i];
 							let exp = "";
+							
 							if (thisVar.indexOf("*") == -1) {
 								vars.push(thisVar);
 							} else {
@@ -346,6 +349,7 @@
 								vars = vars.concat(expandedVars);
 							}
 						}
+
 
 						result.vars = vars;
 
@@ -363,6 +367,9 @@
 									"Variable <b>" +
 									varsCopy[i] +
 									"</b> not found.";
+								reportError(
+										result,result.error
+										);
 								return result;
 							}
 						}
@@ -388,6 +395,7 @@
 			function reportError(input, error) {
 				appendCommandDescription(input.commandline, "");
 				appendContent("<span style='color:red'>" + error + "</span>");
+				throw new Error(error);
 			}
 			function runCommands(multiCommandString) {
 				multiCommandString.split("\n")
@@ -408,7 +416,6 @@
 				currentCommandLine = stataCommandLine.replace(patt, " ");
 
 				input = parseStataSyntaxFromCommandLine();
-
 
 				if (typeof input.error !== "undefined") {
 					reportError(input, input.error);
