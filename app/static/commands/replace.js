@@ -28,6 +28,7 @@ if (currentCommandLine.includes("if")===false) {
     var ifcond = currentCommandLine.substr(currentCommandLine.indexOf('if')+2).trim();
     var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
     alphabet = alphabet.map(item => `.${item}` );
+    alphabet.push('.');
     var naexists = alphabet.some(a => a == input.expression);
     
     if (ifcond.includes(".")) {
