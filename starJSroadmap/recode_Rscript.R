@@ -1,9 +1,9 @@
 # Admin # =======================================================================================================
+want = c("tidyverse", "magrittr", "stringr", "labelled")
+have = want %in% rownames(installed.packages())
+if ( any(!have) ) { install.packages( want[!have] ) }
+junk = lapply(want, library, character.only = TRUE)
 rm(list=ls())
-
-library(tidyverse)
-library(magrittr)
-library(stringr)
 
 stardata <- haven::read_dta(url("http://cise.luiss.it/data/mini_wvs2005_spain.dta"))
 
@@ -12,18 +12,20 @@ stardata <- haven::read_dta(url("http://cise.luiss.it/data/mini_wvs2005_spain.dt
 
 # Command line # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-# Examples w/o 'generate'
+### Examples w/o 'generate'
 # commandline <- "recode sat_life (1 2 3 4 5 = 0) (6 7 8 9 10 = 1)" # example 1
 # commandline <- "recode sat_life (1/5 = 0) (6/10 = 1)" # example 2
-# commandline <- "recode sat_life sat_fin_fam (1/5 = 0) (6/10 = 1)" # example 3
+commandline <- "recode sat_life sat_fin_fam (1/5 = 0) (6/10 = 1)" # example 3
 
-# Examples w 'generate'
+### Examples w 'generate'
 # commandline <- "recode sat_life (1 2 3 4 5 = 0) (6 7 8 9 10 = 1), generate(sat_life_dummy)" # example 4
 # commandline <- "recode sat_life (1/5 = 0) (6/10 = 1), generate(sat_life_dummy)" # example 5
-commandline <- "recode sat_fin_fam (1/5 = 0) (6/10 = 1), generate(sat_fin_fam_dummy)" # example 6
+# commandline <- "recode sat_fin_fam (1/5 = 0) (6/10 = 1), generate(sat_fin_fam_dummy)" # example 6
+# commandline <- 'recode sat_fin_fam (1/5 = 0 "dissat") (6/10 = 1 "sat"), generate(sat_fin_fam_dummy)' # example 7
 
-# Examples w 'generate' but more than one var in varlist (=> Error)
-# commandline <- "recode sat_life sat_fin_fam (1/5 = 0) (6/10 = 1), generate(sat_life_dummy)" # example 7
+### Examples w 'generate' but more than one var in varlist (=> Error) or with labels but w/o 'generate' (=> Error)
+# commandline <- "recode sat_life sat_fin_fam (1/5 = 0) (6/10 = 1), generate(sat_life_dummy)" # example 8
+# commandline <- 'recode sat_fin_fam (1/5 = 0 "dissat") (6/10 = 1 "sat")' # example 9
 
 
 # Command # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -50,9 +52,7 @@ varlist <-
 # Arguments of 'recode' # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # IF commandline has the comma THEN get the name of the new variable, otherwise NA
-comma <- str_count(commandline_wo_command, ',')
-
-if (comma == 1) {
+if (str_detect(commandline_wo_command, ',')) {
   newvar <- 
     commandline_wo_command %>%
     str_extract("[^,\\s]*$") %>% # Extract any character after the first comma
@@ -84,7 +84,30 @@ rm(i, arguments_lst)
 arguments <- lapply(arguments, function(x) gsub("[()]", "", x))
 
 
-# - - - # THIS IS THE POINT AT WHICH LABELS' DEFINITION CAN BE IMPLEMENTED # - - - #
+# This block creates a list of labels, but returns an error in the case in which labels are defined w/o "generate" 
+
+thereiscomma <- str_detect(commandline_wo_command, ',')
+thereisquote <- str_detect(commandline_wo_command, '\"') 
+lbls <- list()
+
+if (thereiscomma==T & thereisquote==T) {
+  for(i in 1:length(arguments)) {
+    lbls[[i]] <- str_extract(arguments[[i]], '"([^"]*)"') %>%
+      gsub("\"", "", .)
+    arguments[[i]] <- arguments[[i]] %>% str_extract("^([^\"])+") %>% str_trim()
+  } 
+} else if (thereiscomma==T & thereisquote==F) {
+  for(i in 1:length(arguments)){
+    lbls[[i]] <- NA_character_    
+  } 
+
+} else if (thereiscomma==F & thereisquote==T) {
+  print("Cannot define labels without generating a new variable")
+} else if (thereiscomma==F & thereisquote==F) {
+  for(i in 1:length(arguments)) {
+    lbls[[i]] <- NA_character_    
+  } 
+}
 
 
 # This function gets the values before '='
@@ -104,9 +127,7 @@ newvalues <-
 # This function creates the numeric vectors of the varlist values
 parsevalues_fun <- function(vals) {
   
-  fctr <- str_count(vals, pattern = "/")
-  
-  if (fctr==0) {
+  if (str_detect(vals, pattern = "/")==F) {
     
     vals %<>% 
       str_split(" ") %>%
@@ -115,7 +136,7 @@ parsevalues_fun <- function(vals) {
     return(vals)
     
     
-  } else if (fctr==1) {
+  } else if (str_detect(vals, pattern = "/")==T) {
     
     minval <- vals %>% str_extract("^([^/])+") %>% as.numeric()
     maxval <- vals %>% str_extract("[^/]*$") %>% as.numeric()  
@@ -136,15 +157,18 @@ values %<>% lapply(., parsevalues_fun)
 vls <- values %>% do.call("c",.)
 
 nwvls <- c()
+nwlbls <- c()
 for(i in 1:length(newvalues)) {
   x <- rep(newvalues[[i]], length(values[[i]]))  
+  y <- rep(lbls[[i]], length(values[[i]]))  
   nwvls <- c(nwvls, x)
-  rm(x)
+  nwlbls <- c(nwlbls, y)
+  rm(x, y)
 }
 rm(i)
 
-values_df <- data.frame(values = vls, newvalues = nwvls)
-rm(vls, nwvls)
+values_df <- data.frame(values = vls, newvalues = nwvls, labels = nwlbls)
+rm(vls, nwvls, nwlbls)
 
 
 # Internal function to recode data - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,7 +183,7 @@ mutatefun <- function(vrbl) {
 
 # Recoding data section based on conditional statements - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-if (length(varlist)!=0 & comma==0) { # If there's no comma(that is, no 'generate') 
+if (length(varlist)>=1 & thereiscomma==F) { # If there's no comma(that is, no 'generate') 
 
   vrbls <- varlist %>% unlist()
   for(i in vrbls) {
@@ -172,7 +196,7 @@ if (length(varlist)!=0 & comma==0) { # If there's no comma(that is, no 'generate
   }
   rm(i)  
   
-} else if (length(varlist)==1 & comma==1) { # If there's a comma(that is, 'generate') and there's only one var
+} else if (length(varlist)==1 & thereiscomma==T) { # If there's a comma(that is, 'generate') and there's only one var
 
   stardata[[newvar[[1]]]] <- stardata[[varlist[[1]]]]
   
@@ -189,4 +213,29 @@ if (length(varlist)!=0 & comma==0) { # If there's no comma(that is, no 'generate
 
 
 
+# Section 3: Labeling # =========================================================================================
 
+values_df %<>% 
+  dplyr::select(-c(values)) %>% 
+  distinct()
+
+values_df$labels %<>% as.factor()
+
+newvar %<>% unlist()
+
+varlist %<>% unlist()
+
+if (is.na(newvar)) {
+  
+  for(v in varlist) {
+    for(i in 1:nrow(values_df)) {
+      val_label(stardata[[v]], values_df[[i,1]]) <- values_df[[i,2]]
+    }
+  }
+  
+} else {
+  
+  for(i in 1:nrow(values_df)) {
+    val_label(stardata[[newvar]], values_df[[i,1]]) <- values_df[[i,2]]
+  }
+}
