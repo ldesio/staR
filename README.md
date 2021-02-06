@@ -3,8 +3,7 @@
 
 staR is free software for performing basic statistical and data analysis tasks. It is primarily designed as a support tool for teaching introductory courses in data analysis for the social sciences, or other social science courses requiring data analysis tasks.
 
-## Goals
-staR’s goals are to provide a software for data analysis with the following characteristics:
+staR was designed to be...
 #### Easy to use
 It should allow users to focus on key aspects of social science research (understanding social reality; theory and hypotheses, concepts, research design, indicators, choice of appropriate statistical tools) rather than force users to invest time and resources in learning a complex programming language, whose power might not necessarily be needed;
 #### Easy to be employed in teaching
@@ -30,7 +29,7 @@ staR addresses the above challenges by providing a web-based app that allows use
 
 ### Single-machine use (recommended for instructor evaluation, or for advanced users)
 
-* ensure you have a recent version of R installed;
+* ensure you have a recent version of R installed (we performed internal testing with R 4.0.2);
 * download staR from https://github.com/ldesio/staR/archive/master.zip and unzip this file into a directory of your choice
 (or clone the https://github.com/ldesio/staR/ repository if you use GitHub);
 * move to the `staR-master/app` subdirectory;
