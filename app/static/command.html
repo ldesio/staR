@@ -288,7 +288,10 @@
 						}
 						);
 				} else {
-					comspec = commandline;
+					// this forces ignoring options, when not declared as acceptable
+					let subparts = commandline.split(",");
+					comspec = subparts[0].trim();
+					// comspec = commandline;
 				}
 
 				comparts = comspec.split(" ");
