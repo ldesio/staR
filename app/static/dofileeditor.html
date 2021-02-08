@@ -51,16 +51,20 @@
 
 </style>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- removed syntax highlighting, which was not working and not activated
 <link rel="stylesheet" href="resources/highlight/styles/default.css">
 <script src="resources/highlight/highlight.pack.js"></script>
+-->
 <script>
 	
+/*
 document.addEventListener('DOMContentLoaded', (event) => {
   document.querySelectorAll('div.stata').forEach((block) => {
     // doesn't work
     //hljs.highlightBlock(block);
   });
 });
+*/
 
 </script>
 
@@ -129,6 +133,8 @@ browse
 <script src="/resources/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var editor = ace.edit("editor");
+    var modal = document.getElementById("myModal");
+
     editor.setTheme("ace/theme/chrome");
     // editor.session.setMode("ace/mode/javascript");
     editor.commands.addCommand({
@@ -138,15 +144,20 @@ browse
             let syntax = editor.getSelectedText();
             if (syntax=="") syntax = editor.getValue();
             
-            modal.style.display = "block";
-            setTimeout(() => {  modal.style.display = "none"; }, 2000);
-            window.opener.runCommands(syntax); // editor.getSelectedText();
-            //...
+            runCommands(syntax);
         },
         readOnly: true // false if this command should not apply in readOnly mode
     });
 
-    var modal = document.getElementById("myModal");
+    async function showModal() {
+    	modal.style.display = "block";
+    	return;
+    }
+    async function runCommands(syntax) {
+    	await showModal();
+    	setTimeout(() => {  window.opener.runCommands(syntax); }, 100);
+    	setTimeout(() => {  modal.style.display = "none"; }, 2100);
+    }
 
     /*
     // When the user clicks on <span> (x), close the modal
