@@ -24,6 +24,9 @@
 			var datasetPostProcess;
 			var databrowser, dofileeditor, helpwindow;
 			var currentCommandLine;
+							
+			var showRSyntax = false;
+
 
 			var hasError;
 
@@ -245,6 +248,15 @@
 				}
 
 				result.options = {};
+
+				
+				// "rsyntax" non-Stata option is available for all commands,
+				// pre-processed separately, and made invisible to command scripts
+				showRSyntax = false;
+				if (isOptionPresent("rsyntax")) {
+					showRSyntax = true;
+					commandline = commandline.replace("rsyntax","");
+				}
 
 				if (commandline.includes(",") && options) {
 					let subparts = commandline.split(",");
@@ -674,11 +686,6 @@
 					"style",
 					"background-color:#ff9933; width:80%; float:right; overflow:auto; border-radius:10px; padding:10px;  margin:10px"
 				);
-
-				// R syntax now disabled
-				var showRSyntax = false;
-
-				if (isOptionPresent("rsyntax")) showRSyntax = true;
 
 				element.innerHTML = stataSyntax;
 				if (showRSyntax)
