@@ -426,8 +426,14 @@
 
 				start = new Date().getTime();
 
+				// removes multiple spaces
 				var patt = / +/g;
 				currentCommandLine = stataCommandLine.replace(patt, " ");
+
+				// converts first character to lower case
+				// helps with auto-completion on mobile devices
+				currentCommandLine = currentCommandLine.charAt(0).toLowerCase() + currentCommandLine.slice(1);
+
 
 				input = parseStataSyntaxFromCommandLine();
 
