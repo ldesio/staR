@@ -10,7 +10,8 @@ rCommands.push("options(huxtable.knitr_output_format = \"html\")");
 
 for (i=0; i < input.vars.length; i++) {
 	let name = input.vars[i], label = varLabel(input.vars[i]);
-
+	label = Encoder.htmlEncode(label);
+	
 	rCommands.push(
 		"cat(paste0('<h3>Frequency distribution of " + name + " (<i>" + label + "</i>)</h3>'))");
 	if (noLabel) rCommands.push("val_lab(stardata$"+name+")=NULL");
