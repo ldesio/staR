@@ -106,17 +106,16 @@ button.code-folding-btn:focus {
 
 <div style="background-color:#ffffff; width:80%; float:left; overflow:auto; border-radius:10px; padding:10px; margin:10px">
 <img src="./logo_splash_small.png" style="height:300px"/>
+<br /><span id="version"></span>
 </div>
 
-<!-- -->
+<script>
+fetch('../VERSION')
+.then(response => response.text()) 
+.then(textString => {
+    document.getElementById("version").appendChild(document.createTextNode("Version " + textString) );
+});
+
+</script>
 
 
-<!--
-
-</div>
-
-
-</body>
-</html>
-
--->
