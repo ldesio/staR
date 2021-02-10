@@ -429,7 +429,18 @@
 						let run = true;
 						if (singleCommandLine.trim()=="") run = false;
 						if (singleCommandLine.trim().substring(0,2)=="//") run = false;				
-						if (run) runCommand(singleCommandLine);
+						// allows repaint after executing each command
+						if (run) requestAnimationFrame(() => {
+						  requestAnimationFrame(() => {
+						    setTimeout(() => {
+						      runCommand(singleCommandLine)
+						    });
+						  });
+						});
+
+
+
+
 					});
 			}
 			function runCommand(stataCommandLine) {
@@ -671,6 +682,8 @@
 				element.innerHTML = HTMLContent;
 				outputDoc.body.appendChild(element);
 
+				outputDoc.getElementById(divId).style.display = 'none';
+				outputDoc.getElementById(divId).style.display = 'block';
 				outputDoc
 					.getElementById(divId)
 					.previousSibling.scrollIntoView();

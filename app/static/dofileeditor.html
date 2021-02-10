@@ -73,9 +73,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 <body>
 
 <div class="stata" id="editor" style="font-size: 14px">// this is an example do-file, with a basic staR test suite:
-// hit Ctrl-Enter (Windows) or Command-Enter (Mac)
-// to run the selected commands (if there is a selection)
-// or the contents of the whole do-file.
+// select one or more commands,
+// then hit Ctrl-Enter (Windows) or Command-Enter (Mac)
+// to run the selected commands.
 
 use http://cise.luiss.it/data/mini_wvs2005_spain.dta 
 tab1 woman
@@ -88,7 +88,6 @@ tab2 edu8 woman, row col nofreq
 
 hist woman
 
-// DOESN'T WORK ONLINE (Linux, R latest version) BUT WORKS LOCALLY (Windows, perhaps older version or some localization issue)!!!
 hist edu8 
 hist age
 by woman: hist edu8
@@ -142,8 +141,12 @@ browse
         bindKey: {win: 'Ctrl-Enter',  mac: 'Command-Enter'},
         exec: function(editor) {
             let syntax = editor.getSelectedText();
-            if (syntax=="") syntax = editor.getValue();
-            
+            if (syntax=="") {
+            	// now default execution of whole file is disabled to avoid overloads
+            	// syntax = editor.getValue();
+            	alert("No code lines selected.\r\nSelect one or more lines to execute them.");
+            	return;
+            }
             runCommands(syntax);
         },
         readOnly: true // false if this command should not apply in readOnly mode
