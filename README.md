@@ -10,13 +10,15 @@ Learning from my [decade-long experience](http://docenti.luiss.it/desio/) in tea
 #### Easy to use
 allowing users to focus on key aspects of social science research (understanding social reality; theory and hypotheses, concepts, research design, indicators, choice of appropriate statistical tools) rather than force them to invest time and resources in learning a complex programming language, whose power might not necessarily be needed;
 #### Easy to be employed in teaching
-providing a simple command syntax with simple options, rather than requiring to learn and teach complex menu and window systems (looking for options hidden in minor buttons or dialog boxes); and by producing output that is easy and consistent to copy and paste across applications (to also help perform assignments);
+providing a simple command syntax with simple options, rather than requiring either: (a) to learn and teach complex menu and window systems (looking for options hidden in minor buttons or dialog boxes) or (b) to learn a complex programming language designed for much more than simple data analysis;
+also, producing output that is easy and consistent to copy and paste across applications (to also help perform assignments);
 #### Easy to extend
-allowing instructors to extend it to implement the statistical procedures they may need for their particular course;
+allowing instructors to extend it to implement the data analysis techniques they may need for their particular course;
 #### Standards-based
 helping instructors to provide students with skills that they may reuse, perhaps on professional statistical tools used in the academia and business;
 #### Free (and open source)
-offering a free tool to students (whose perhaps occasional use of statistical tools should not require expensive licenses) and to university departments (not requiring massive license investments for introductory teaching).
+offering a free tool to students (whose perhaps occasional use of statistical tools should not require expensive licenses) and to university departments (removing the requirement of massive license investments for introductory teaching);
+providing an open source tool, open to amendments and extensions by the scientific community.
 
 ## Features
 staR addresses the above challenges by providing a web-based app that allows users to open datasets and perform basic statistical operations by using the following commands, which act as basic functional equivalents of the same commands supported by the commercial Stata ® software.*
