@@ -1,4 +1,4 @@
-want = c("plumber", "tidyverse", "foreign", "knitr", "summarytools", "expss", "haven", "stargazer", "labelled", "magrittr")
+want = c("plumber", "tidyverse", "foreign", "knitr", "summarytools", "expss", "haven", "stargazer", "labelled", "magrittr", "psych")
 # "factors", 
 # non-existing package name: it could be either "lfactors" or "forcats"
 have = want %in% rownames(installed.packages())
