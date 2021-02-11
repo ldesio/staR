@@ -50,6 +50,7 @@ This is possible by setting up a Docker container on your provider of choice (us
 * create and start a Docker container based on this image;
 * annotate the public URL of this container;
 * navigate to it to test staR; share this URL with students.
+
 NOTE: users connecting to a staR server can currently only use Stata-format datasets located at publicly accessible URLs; you will have to set up necessary datasets accordingly.
 
 ## staR architecture and extensibility
