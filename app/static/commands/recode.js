@@ -140,17 +140,14 @@ if (vrlst.length >=1 & currentCommandLine.includes(',')===false) {
     for (i = 0; i < vlsdf.newvalues.length; i++) {
       
       Rrecode = (Rrecode + "stardata[[\"" + vrlst[k] + "\"]][stardata[[\"" + vrlst[k] + "\"]]==" + 
-      vlsdf.oldvalues[i] + "] <- " + vlsdf.newvalues[i] +  ";");
-    }
-
-    /* GC 2021-01-15: values are not being labeled.... why?*/
-    for (i = 0; i < vlsdf.newvalues.length; i++) { 
-      if (vlsdf.labels[i] === "") {
-        Rrecode = (Rrecode + "x = labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- NA;");
+      vlsdf.oldvalues[i] + "] <- " + vlsdf.newvalues[i] +  ";\n");
+       
+       if (vlsdf.labels[i] === "") {
+        Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- NA;\n");
         } else {
-          Rrecode = (Rrecode + "x = labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";");
+          Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";\n");
         }
-      }
+    }
   }
 
   loadDataset({
@@ -165,23 +162,20 @@ if (vrlst.length >=1 & currentCommandLine.includes(',')===false) {
     
     if (datasetHasVariable(newvar) === false & newvar!=="") {
       
-      Rrecode = (Rrecode + "stardata[[\"" + newvar + "\"]] <- stardata[[\"" + vrlst[0] + "\"]];");  
-      Rrecode = (Rrecode + "var_lab(stardata[[\"" + newvar + "\"]]) <- \"Recode of " + vrlst[0] + "\";");
+      Rrecode = (Rrecode + "stardata[[\"" + newvar + "\"]] <- stardata[[\"" + vrlst[0] + "\"]];\n");  
+      Rrecode = (Rrecode + "var_lab(stardata[[\"" + newvar + "\"]]) <- \"Recode of " + vrlst[0] + "\";\n");
       
       for (i = 0; i < vlsdf.newvalues.length; i++) {
         Rrecode = (Rrecode + "stardata[[\"" + newvar + "\"]][stardata[[\"" + newvar + "\"]]==" + 
-        vlsdf.oldvalues[i] + "] <- " + vlsdf.newvalues[i] +  ";");
-      }
-      
-      /* GC 2021-01-15: values are not being labeled.... why?*/
-      for (i = 0; i < vlsdf.newvalues.length; i++) { 
+        vlsdf.oldvalues[i] + "] <- " + vlsdf.newvalues[i] +  ";\n");
+        
         if (vlsdf.labels[i] == "") {
-          Rrecode = (Rrecode + "x = labelled::val_label(stardata[[\"" + newvar + "\"]], v = " + vlsdf.newvalues[i] + ") <- NA;");
+          Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + newvar + "\"]], v = " + vlsdf.newvalues[i] + ") <- NA;\n");
           } else {
-            Rrecode = (Rrecode + "x = labelled::val_label(stardata[[\"" + newvar + "\"]], v =  " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";");
+            Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + newvar + "\"]], v =  " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";\n");
           }
       }
-    
+
     loadDataset({
     input: input,
     command: datasetUse,
