@@ -51,6 +51,8 @@ This is possible by setting up a Docker container on your provider of choice (us
 * annotate the public URL of this container;
 * navigate to it to test staR; share this URL with students.
 
+NOTE: users connecting to a staR server can currently only use Stata-format datasets located at publicly accessible URLs; you will have to set up necessary datasets accordingly.
+
 ## staR architecture and extensibility
 staR is powered by R. In particular, it provides a web-based (HTML, JavaScript) interface that:
 
