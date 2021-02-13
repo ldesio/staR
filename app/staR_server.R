@@ -1,5 +1,5 @@
 # setwd("M:/staR/JS/Rengine")
-setwd("/staR")
+setwd("/staR/app")
 library(jsonlite)
 library(plumber)
 #library(foreign) 
