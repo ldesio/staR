@@ -6,6 +6,8 @@
 inpt = currentCommandLine.substr(currentCommandLine.indexOf(' ')).trim(); // substract the command from the string
 input = parseStataSyntaxFromCommandLine({parseType:"label"});
 
+var finalReapply = "for (v in colnames(stardata)) {expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]); };";
+
 // IF comma, THEN 'opts' consists in the option. Otherwise this passage returns an empty 'opts' object // - - -
 
 if (inpt.includes(',')) {
@@ -145,10 +147,13 @@ if (vrlst.length >=1 & currentCommandLine.includes(',')===false) {
        if (vlsdf.labels[i] === "") {
         Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- NA;\n");
         } else {
-          Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";\n");
+          Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + vrlst[k] + "\"]], v = " + vlsdf.newvalues[i] + ") <- \"" + Encoder.htmlEncode(vlsdf.labels[i]) + "\";\n");
         }
     }
   }
+
+  Rrecode += "\nfor (v in colnames(stardata)) {expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]); };";
+
 
   loadDataset({
   input: input,
@@ -172,9 +177,12 @@ if (vrlst.length >=1 & currentCommandLine.includes(',')===false) {
         if (vlsdf.labels[i] == "") {
           Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + newvar + "\"]], v = " + vlsdf.newvalues[i] + ") <- NA;\n");
           } else {
-            Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + newvar + "\"]], v =  " + vlsdf.newvalues[i] + ") <- \"" + vlsdf.labels[i] + "\";\n");
+            Rrecode = (Rrecode + "labelled::val_label(stardata[[\"" + newvar + "\"]], v =  " + vlsdf.newvalues[i] + ") <- \"" + Encoder.htmlEncode(vlsdf.labels[i]) + "\";\n");
           }
       }
+
+
+	Rrecode += "\nfor (v in colnames(stardata)) {expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]); };";
 
     loadDataset({
     input: input,
