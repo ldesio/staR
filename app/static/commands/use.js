@@ -5,11 +5,11 @@ if (!input.filename) {
 } else {
 	// assuming URL to DTA file
 	// rSyntax = "library(foreign); stardata <- read.dta('"+input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")+"')";
-	rSyntax = "library(haven); library(expss); " +
+	rSyntax = "library(haven); library(expss); library(magrittr); " +
 		"\nstardata <- haven::read_dta('"+input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")+"')"
 	
 	// adds value labels
-	rPostProcess =  "# adds value labels\nfor (v in colnames(stardata)) {expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]); };";
+	rPostProcess =  "# adds value labels\nfor (v in colnames(stardata)) {expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]); };\n for (v in colnames(stardata)) {expss::val_lab(stardata[[v]])= expss::prepend_values(stardata[[v]]) %>% attr(., 'labels'); };";
 	
 
 	loadDataset({
