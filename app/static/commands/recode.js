@@ -182,7 +182,16 @@ if (vrlst.length >=1 & currentCommandLine.includes(',')===false) {
       }
 
 
-	Rrecode += "\nfor (v in colnames(stardata)) {expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]); };";
+	Rrecode += `
+# adds value labels
+for (v in colnames(stardata)) {
+	expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]);
+}
+# prepends values to value labels
+for (v in colnames(stardata)) {
+	expss::val_lab(stardata[[v]])= expss::prepend_values(stardata[[v]]) %>% attr(., 'labels');
+}
+`;
 
     loadDataset({
     input: input,
