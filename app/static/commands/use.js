@@ -4,12 +4,28 @@ if (!input.filename) {
 	document.getElementById('file-input').click();
 } else {
 	// assuming URL to DTA file
-	// rSyntax = "library(foreign); stardata <- read.dta('"+input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")+"')";
-	rSyntax = "library(haven); library(expss); library(magrittr); " +
-		"\nstardata <- haven::read_dta('"+input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")+"')"
 	
+// attempts first to read as UTF-8 (supports accented letters), otherwise falls back to default encoding
+rSyntax = `
+tryCatch(
+	{
+		stardata <- haven::read_dta('${input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")}', encoding='utf-8')
+	}, error = function(e) {
+		stardata <- haven::read_dta('${input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")}')
+	}
+)`;
+
 	// adds value labels
-	rPostProcess =  "# adds value labels\nfor (v in colnames(stardata)) {expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]); };\n for (v in colnames(stardata)) {expss::val_lab(stardata[[v]])= expss::prepend_values(stardata[[v]]) %>% attr(., 'labels'); };";
+	rPostProcess =  `
+# adds value labels
+for (v in colnames(stardata)) {
+	expss::val_lab(stardata[,v])=expss::val_lab(stardata[,v]);
+}
+# prepends values to value labels
+for (v in colnames(stardata)) {
+	expss::val_lab(stardata[[v]])= expss::prepend_values(stardata[[v]]) %>% attr(., 'labels');
+}
+`;
 	
 
 	loadDataset({
