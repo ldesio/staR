@@ -7,7 +7,7 @@ runPackage({
 		wrapGraphicCommand(
 			"plot(nolabeled$" + input.vars[1] + 
 			",nolabeled$" + input.vars[0] + 
-			", xlab='" + varLabel(input.vars[1])+"', ylab='" + Encoder.htmlEncode(varLabel(input.vars[0]))+"');"
+			", xlab='" + Encoder.htmlEncode(varLabel(input.vars[1]))+"', ylab='" + Encoder.htmlEncode(varLabel(input.vars[0]))+"');"
 		)
 	]
 })
