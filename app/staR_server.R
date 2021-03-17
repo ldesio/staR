@@ -2,6 +2,7 @@
 setwd("/staR/app")
 library(jsonlite)
 library(plumber)
+library(magrittr)
 #library(foreign) 
 #library(knitr)
 # library(summarytools)
