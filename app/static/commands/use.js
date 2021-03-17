@@ -10,7 +10,9 @@ rSyntax = `
 tryCatch(
 	{
 		stardata <- haven::read_dta('${input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")}', encoding='utf-8')
-	}, error = function(e) {
+	}, error=function(e){
+		stardata <- haven::read_dta('${input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")}')
+	}, finally={
 		stardata <- haven::read_dta('${input.filename.replace(/\\/g,"\\\\").replace(/\"/g,"")}')
 	}
 )`;
