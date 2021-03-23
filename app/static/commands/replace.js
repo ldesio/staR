@@ -25,7 +25,7 @@ if (currentCommandLine.includes("if")===false) {
   
   if (datasetHasVariable(input.newvar) === true) {
     
-    var ifcond = currentCommandLine.substr(currentCommandLine.indexOf('if')+2).trim();
+    var ifcond = input.if;
     var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
     alphabet = alphabet.map(item => `.${item}` );
     alphabet.push('.');
