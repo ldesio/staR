@@ -9,6 +9,7 @@ library(magrittr)
 #library(expss)
 #library(stargazer)
 
+options(digits=8)
 svr <- plumber::plumb("api.R")
 s <- svr$run(host='0.0.0.0',port=80)
 

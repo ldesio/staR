@@ -16,6 +16,8 @@ library(plumber)
 library(jsonlite)
 library(magrittr)
 # library(tidyverse)
+
+options(digits=8)
 svr <- plumber::plumb("api.R")
 s <- svr$run(host='0.0.0.0',port=8000)
 
