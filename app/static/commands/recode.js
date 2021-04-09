@@ -168,6 +168,7 @@ if (vrlst.length >=1 & currentCommandLine.includes(',')===false) {
     if (datasetHasVariable(newvar) === false & newvar!=="") {
       
       Rrecode = (Rrecode + "stardata[[\"" + newvar + "\"]] <- stardata[[\"" + vrlst[0] + "\"]];\n");  
+      Rrecode += "library(expss);";
       Rrecode = (Rrecode + "var_lab(stardata[[\"" + newvar + "\"]]) <- \"Recode of " + vrlst[0] + "\";\n");
       
       for (i = 0; i < vlsdf.newvalues.length; i++) {
