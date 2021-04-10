@@ -247,11 +247,11 @@
 					result.if = ifClause;
 				}
                                 if (commandline.includes("[")) {
-					let wtClause = commandline.slice(commandline.indexOf("[") + "[".length-1).trim();
-					if (wtClause.includes("]")) wtClause = wtClause.substring(0,wtClause.indexOf("]")).trim();
+					let wtClause = commandline.slice(commandline.indexOf("[") + "[".length-1);
+					if (wtClause.includes("]")) wtClause = wtClause.substring(0,wtClause.indexOf("]"));
 					
-					commandline = commandline.replace("[" + wtClause,"]");
-					result.weight = wtClause;
+					commandline = commandline.replace("[" + wtClause,"]","");
+					result.weight = wtClause.trim();
 				}
 
 				result.options = {};
