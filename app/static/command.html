@@ -246,6 +246,13 @@
 					commandline = commandline.replace(" if " + ifClause,"");
 					result.if = ifClause;
 				}
+                                if (commandline.includes("[")) {
+					let wtClause = commandline.slice(commandline.indexOf("[") + "[".length-1).trim();
+					if (wtClause.includes("]")) wtClause = wtClause.substring(0,wtClause.indexOf("]")).trim();
+					
+					commandline = commandline.replace("[" + wtClause,"]");
+					result.weight = wtClause;
+				}
 
 				result.options = {};
 
