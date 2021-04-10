@@ -55,7 +55,7 @@ var destVar  = sourceVar; // defaults to replacing existing variable
 if (input2.options.generate) destVar = input2.options.generate;
 
 
-finalRecode = "stardata$" + destVar + " <- recode(stardata$" + sourceVar + ", " + newRules.join(",") + ");";
+finalRecode = "library(expss); stardata$" + destVar + " <- recode(stardata$" + sourceVar + ", " + newRules.join(",") + ");";
 
 // this does not work...
 finalRecode += "expss::val_lab(stardata$" + destVar + ")=expss::val_lab(stardata$" + destVar + ");";
