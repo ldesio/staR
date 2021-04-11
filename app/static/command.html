@@ -246,11 +246,14 @@
 					commandline = commandline.replace(" if " + ifClause,"");
 					result.if = ifClause;
 				}
-                                if (commandline.includes("[")) {
-					let wtClause = commandline.slice(commandline.indexOf("[") + "[".length-1);
+                if (commandline.includes("[")) {
+					let wtClause = commandline.slice(commandline.indexOf("[") + 1);
 					if (wtClause.includes("]")) wtClause = wtClause.substring(0,wtClause.indexOf("]"));
 					
-					commandline = commandline.replace("[" + wtClause,"]","");
+					console.log(commandline);
+					console.log("[" + wtClause + "]");
+					commandline = commandline.replace("[" + wtClause + "]","");
+					console.log(commandline);
 					result.weight = wtClause.trim();
 				}
 
