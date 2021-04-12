@@ -45,19 +45,18 @@ for (var i = 0; i < rules.length; i++) {
   newRules.push(RdestLabel + Rsel + " ~ " + RdestValue);
 
 }
+// final default rule for copying unrecoded values
+newRules.push("other ~ copy");
 
 // in fact this is parsing the original line (not the cleaned one), but it works.
 // No time to test that removing the "cleaned line" code is harmless...
 
-// GC 2021.04.12: Added 'gen' to allowed Stata options 
-input2 = parseStataSyntax(line,"varlist",["generate", "gen"]); 
+input2 = parseStataSyntax(line,"varlist",["generate"]); 
 
 var sourceVar = input2.vars[0]
 var destVar  = sourceVar; // defaults to replacing existing variable
 
-// GC 2021.04.12: Two conditional statements that probably can be reduced to one... but it works.
 if (input2.options.generate) destVar = input2.options.generate;
-if (input2.options.gen) destVar = input2.options.gen;  
 
 finalRecode = "library(expss); stardata$" + destVar + " <- recode(stardata$" + sourceVar + ", " + newRules.join(",") + ");";
 
