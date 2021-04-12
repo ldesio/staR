@@ -8,7 +8,6 @@ if  (input.options.nolabel) noLabel = true;
 
 rCommands.push("options(huxtable.knitr_output_format = \"html\")");
 
-console.log(input.weight);
 var freWeight = "", weightDesc = "";
 if (input.weight) {
 	freWeight = ", weight=stardata$" + input.weight.split("=")[1];
