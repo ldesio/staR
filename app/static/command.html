@@ -281,7 +281,6 @@
 					sentOptions.forEach(
 						function(element) {
 							let optionName = element, optionValue = element;
-							optionName = findItem(options,optionName);
 							if (element.indexOf("(")!=-1) {
 								if (element.indexOf(")")==-1) {
 									reportError(
@@ -291,12 +290,16 @@
 									return;
 								} else {
 									optionName = element.substr(0,element.indexOf("("));
+									optionName = findItem(options,optionName);
+							
 									optionValue = element.substr(element.indexOf("("));
 									optionValue = optionValue.replace(/\(/g,"");
 									optionValue = optionValue.replace(/\)/g,"");
 								}
+							} else {
+								optionName = findItem(options,optionName);
 							}
-
+							
 							if (options!==undefined) {
 								if (options.includes(optionName)) {
 									result.options[optionName] = optionValue;
