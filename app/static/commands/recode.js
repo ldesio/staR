@@ -21,19 +21,35 @@ for (var i = 0; i < rules.length; i++) {
   // split rule into selection (left) and applied value (right)
   let sel = el.split("=")[0].trim(), apply = el.split("=")[1].trim();
   
-  // remove space from slash, if range
-  sel = sel.replace(" / ","/");
-
-  // coverting to expss::recode syntax: replace space with : for multiple specific values
-  let Rsel = sel.replace(/ /g,":");
-
-  // convert / to %thru%
-  Rsel = Rsel.replace("/"," %thru% ");
-
-  // convert "min" and "max" to "lo" and "hi"
-  Rsel = Rsel.replace("min","lo");
-  Rsel = Rsel.replace("max","hi");
+  let Rsel = "";
   
+  if (sel.indexOf("/") != -1) {
+    // it's a range
+
+    // remove space from slash, if range
+    Rsel = sel.replace(" / ","/");
+    Rsel = Rsel.replace("/ ","/");
+    Rsel = Rsel.replace(" /","/");
+
+    // convert / to %thru%
+    Rsel = Rsel.replace("/"," %thru% ");
+
+    // convert "min" and "max" to "lo" and "hi"
+    Rsel = Rsel.replace("min","lo");
+    Rsel = Rsel.replace("max","hi");
+
+  } else {
+    // it's separate values
+    if (sel.indexOf(" ") != -1) {
+      // multiple discrete values
+      Rsel = "c(" + sel.replace(/ /g,",") + ")";
+    } else {
+      // a single value
+      Rsel = sel;
+    }
+
+  }
+
   // in applied, what is before " " is taken as value, the rest (if any) as label
   let RdestValue = apply.split(" ")[0], RdestLabel = "";
   if (apply.indexOf(" ") > -1) RdestLabel = apply.replace(RdestValue,"") + " = ";
