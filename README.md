@@ -29,6 +29,11 @@ staR addresses the above challenges by providing a web-based app that allows use
 
 Typing `doedit` will show a code editor and load a test document showing some of staR's capabilities.
 
+### Stata-to-R translation
+staR is inherently based on a set of "translation" scripts that generate R syntax implementing the statistical operations corresponding to the supplied Stata-like syntax, to be forwarded to an R server for execution.
+A key by-product of this process is that such generated R syntax can be shown to the user, which can be useful in teaching R equivalent syntax of common operations, leveraging common R packages.
+To see the generated syntax, simply append the `rsyntax` option to any Stata command you run in the command pane.
+
 (* Stata ® is a registered trademark of StataCorp LP.)
 
 ## Installation
