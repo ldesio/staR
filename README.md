@@ -57,6 +57,7 @@ This is possible by setting up a Docker container on your provider of choice (us
 * navigate to it to test staR; share this URL with students.
 
 NOTE: users connecting to a staR server can currently only use Stata-format datasets located at publicly accessible URLs; you will have to set up necessary datasets accordingly.
+NOTE 2: a staR server consists of an R instance living in a Linux server. As R is single-threaded, this means that a large number of concurrent users might lead to server overload. Before using staR with large classes, you are strongly advised to run multi-user performance tests. In any case, performance problems can be easily solved by setting up multiple servers, by assigning users to different servers, or by using more sophisticated tools (e.g. automatic multiplication of server instances, along with automatic load balancing) which are ordinarily available in Docker hosting environments.
 
 ## staR architecture and extensibility
 staR is powered by R. In particular, it provides a web-based (HTML, JavaScript) interface that:
